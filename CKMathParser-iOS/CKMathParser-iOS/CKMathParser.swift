@@ -16,19 +16,16 @@ class CKMathParser {
         print("Parser Initialized");
     }
     
-    func evaluate(expression: String) -> Float {
+    func evaluate(mathExpression: String) -> Double {
         
-        // Clear empty space before and after expression
-        // Check for letters
+        let expression = cleanInput(mathExpression)
         
         for op in operations {
             if let pos = expression.rangeOfString(op, options:NSStringCompareOptions.BackwardsSearch) {
                 
                 let leftExpression = expression.substringWithRange(expression.startIndex..<pos.startIndex)
                 let rightExpression = expression.substringWithRange(pos.endIndex..<expression.endIndex)
-                print(leftExpression)
-                print(rightExpression)
-                print("---------------")
+                
                 switch op {
                     case "^":
                         return pow(evaluate(leftExpression), evaluate(rightExpression))
@@ -46,6 +43,16 @@ class CKMathParser {
             }
         }
         
-        return (expression as NSString).floatValue
+        return (expression as NSString).doubleValue
+    }
+    
+    private func cleanInput(var expression: String) -> String {
+        expression = expression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        if expression[expression.startIndex] == "(" && expression[expression.endIndex.predecessor()] == ")" {
+            expression.removeAtIndex(expression.startIndex)
+            expression.removeAtIndex(expression.endIndex.predecessor())
+        }
+        
+        return expression
     }
 }
