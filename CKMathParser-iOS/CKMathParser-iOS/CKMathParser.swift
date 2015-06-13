@@ -10,7 +10,7 @@ import Foundation
 
 class CKMathParser {
     
-    private let operations = ["-", "+", "/", "*"]
+    private let operations = ["+", "-", "*", "/", "^"]
     
     init() {
         print("Parser Initialized");
@@ -26,8 +26,12 @@ class CKMathParser {
                 
                 let leftExpression = expression.substringWithRange(expression.startIndex..<pos.startIndex)
                 let rightExpression = expression.substringWithRange(pos.endIndex..<expression.endIndex)
-            
+                print(leftExpression)
+                print(rightExpression)
+                print("---------------")
                 switch op {
+                    case "^":
+                        return pow(evaluate(leftExpression), evaluate(rightExpression))
                     case "*":
                         return evaluate(leftExpression) * evaluate(rightExpression)
                     case "/":
