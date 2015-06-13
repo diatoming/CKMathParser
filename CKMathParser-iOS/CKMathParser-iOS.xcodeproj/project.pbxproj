@@ -1,0 +1,535 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		703C50E01B2BE5330002AA33 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C50DF1B2BE5330002AA33 /* AppDelegate.swift */; };
+		703C50E21B2BE5330002AA33 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C50E11B2BE5330002AA33 /* ViewController.swift */; };
+		703C50E51B2BE5330002AA33 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 703C50E31B2BE5330002AA33 /* Main.storyboard */; };
+		703C50E81B2BE5330002AA33 /* CKMathParser_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 703C50E61B2BE5330002AA33 /* CKMathParser_iOS.xcdatamodeld */; };
+		703C50EA1B2BE5330002AA33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 703C50E91B2BE5330002AA33 /* Assets.xcassets */; };
+		703C50ED1B2BE5330002AA33 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 703C50EB1B2BE5330002AA33 /* LaunchScreen.storyboard */; };
+		703C50F81B2BE5330002AA33 /* CKMathParser_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C50F71B2BE5330002AA33 /* CKMathParser_iOSTests.swift */; };
+		703C51031B2BE5330002AA33 /* CKMathParser_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C51021B2BE5330002AA33 /* CKMathParser_iOSUITests.swift */; };
+		703C51121B2BE6200002AA33 /* CKMathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C51111B2BE6200002AA33 /* CKMathParser.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		703C50F41B2BE5330002AA33 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 703C50D41B2BE5330002AA33 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 703C50DB1B2BE5330002AA33;
+			remoteInfo = "CKMathParser-iOS";
+		};
+		703C50FF1B2BE5330002AA33 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 703C50D41B2BE5330002AA33 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 703C50DB1B2BE5330002AA33;
+			remoteInfo = "CKMathParser-iOS";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		703C50DC1B2BE5330002AA33 /* CKMathParser-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CKMathParser-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		703C50DF1B2BE5330002AA33 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		703C50E11B2BE5330002AA33 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		703C50E41B2BE5330002AA33 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		703C50E71B2BE5330002AA33 /* CKMathParser_iOS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CKMathParser_iOS.xcdatamodel; sourceTree = "<group>"; };
+		703C50E91B2BE5330002AA33 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		703C50EC1B2BE5330002AA33 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		703C50EE1B2BE5330002AA33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		703C50F31B2BE5330002AA33 /* CKMathParser-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CKMathParser-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		703C50F71B2BE5330002AA33 /* CKMathParser_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CKMathParser_iOSTests.swift; sourceTree = "<group>"; };
+		703C50F91B2BE5330002AA33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		703C50FE1B2BE5330002AA33 /* CKMathParser-iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CKMathParser-iOSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		703C51021B2BE5330002AA33 /* CKMathParser_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CKMathParser_iOSUITests.swift; sourceTree = "<group>"; };
+		703C51041B2BE5330002AA33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		703C51111B2BE6200002AA33 /* CKMathParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKMathParser.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		703C50D91B2BE5330002AA33 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		703C50F01B2BE5330002AA33 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		703C50FB1B2BE5330002AA33 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		703C50D31B2BE5330002AA33 = {
+			isa = PBXGroup;
+			children = (
+				703C50DE1B2BE5330002AA33 /* CKMathParser-iOS */,
+				703C50F61B2BE5330002AA33 /* CKMathParser-iOSTests */,
+				703C51011B2BE5330002AA33 /* CKMathParser-iOSUITests */,
+				703C50DD1B2BE5330002AA33 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		703C50DD1B2BE5330002AA33 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				703C50DC1B2BE5330002AA33 /* CKMathParser-iOS.app */,
+				703C50F31B2BE5330002AA33 /* CKMathParser-iOSTests.xctest */,
+				703C50FE1B2BE5330002AA33 /* CKMathParser-iOSUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		703C50DE1B2BE5330002AA33 /* CKMathParser-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				703C50DF1B2BE5330002AA33 /* AppDelegate.swift */,
+				703C50E11B2BE5330002AA33 /* ViewController.swift */,
+				703C51111B2BE6200002AA33 /* CKMathParser.swift */,
+				703C50E31B2BE5330002AA33 /* Main.storyboard */,
+				703C51101B2BE5620002AA33 /* Supporting Files */,
+			);
+			path = "CKMathParser-iOS";
+			sourceTree = "<group>";
+		};
+		703C50F61B2BE5330002AA33 /* CKMathParser-iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				703C50F71B2BE5330002AA33 /* CKMathParser_iOSTests.swift */,
+				703C50F91B2BE5330002AA33 /* Info.plist */,
+			);
+			path = "CKMathParser-iOSTests";
+			sourceTree = "<group>";
+		};
+		703C51011B2BE5330002AA33 /* CKMathParser-iOSUITests */ = {
+			isa = PBXGroup;
+			children = (
+				703C51021B2BE5330002AA33 /* CKMathParser_iOSUITests.swift */,
+				703C51041B2BE5330002AA33 /* Info.plist */,
+			);
+			path = "CKMathParser-iOSUITests";
+			sourceTree = "<group>";
+		};
+		703C51101B2BE5620002AA33 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				703C50E91B2BE5330002AA33 /* Assets.xcassets */,
+				703C50EB1B2BE5330002AA33 /* LaunchScreen.storyboard */,
+				703C50EE1B2BE5330002AA33 /* Info.plist */,
+				703C50E61B2BE5330002AA33 /* CKMathParser_iOS.xcdatamodeld */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		703C50DB1B2BE5330002AA33 /* CKMathParser-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 703C51071B2BE5330002AA33 /* Build configuration list for PBXNativeTarget "CKMathParser-iOS" */;
+			buildPhases = (
+				703C50D81B2BE5330002AA33 /* Sources */,
+				703C50D91B2BE5330002AA33 /* Frameworks */,
+				703C50DA1B2BE5330002AA33 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "CKMathParser-iOS";
+			productName = "CKMathParser-iOS";
+			productReference = 703C50DC1B2BE5330002AA33 /* CKMathParser-iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		703C50F21B2BE5330002AA33 /* CKMathParser-iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 703C510A1B2BE5330002AA33 /* Build configuration list for PBXNativeTarget "CKMathParser-iOSTests" */;
+			buildPhases = (
+				703C50EF1B2BE5330002AA33 /* Sources */,
+				703C50F01B2BE5330002AA33 /* Frameworks */,
+				703C50F11B2BE5330002AA33 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				703C50F51B2BE5330002AA33 /* PBXTargetDependency */,
+			);
+			name = "CKMathParser-iOSTests";
+			productName = "CKMathParser-iOSTests";
+			productReference = 703C50F31B2BE5330002AA33 /* CKMathParser-iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		703C50FD1B2BE5330002AA33 /* CKMathParser-iOSUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 703C510D1B2BE5330002AA33 /* Build configuration list for PBXNativeTarget "CKMathParser-iOSUITests" */;
+			buildPhases = (
+				703C50FA1B2BE5330002AA33 /* Sources */,
+				703C50FB1B2BE5330002AA33 /* Frameworks */,
+				703C50FC1B2BE5330002AA33 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				703C51001B2BE5330002AA33 /* PBXTargetDependency */,
+			);
+			name = "CKMathParser-iOSUITests";
+			productName = "CKMathParser-iOSUITests";
+			productReference = 703C50FE1B2BE5330002AA33 /* CKMathParser-iOSUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		703C50D41B2BE5330002AA33 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Connor Krupp";
+				TargetAttributes = {
+					703C50DB1B2BE5330002AA33 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					703C50F21B2BE5330002AA33 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 703C50DB1B2BE5330002AA33;
+					};
+					703C50FD1B2BE5330002AA33 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 703C50DB1B2BE5330002AA33;
+					};
+				};
+			};
+			buildConfigurationList = 703C50D71B2BE5330002AA33 /* Build configuration list for PBXProject "CKMathParser-iOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 703C50D31B2BE5330002AA33;
+			productRefGroup = 703C50DD1B2BE5330002AA33 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				703C50DB1B2BE5330002AA33 /* CKMathParser-iOS */,
+				703C50F21B2BE5330002AA33 /* CKMathParser-iOSTests */,
+				703C50FD1B2BE5330002AA33 /* CKMathParser-iOSUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		703C50DA1B2BE5330002AA33 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				703C50ED1B2BE5330002AA33 /* LaunchScreen.storyboard in Resources */,
+				703C50EA1B2BE5330002AA33 /* Assets.xcassets in Resources */,
+				703C50E51B2BE5330002AA33 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		703C50F11B2BE5330002AA33 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		703C50FC1B2BE5330002AA33 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		703C50D81B2BE5330002AA33 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				703C50E21B2BE5330002AA33 /* ViewController.swift in Sources */,
+				703C50E01B2BE5330002AA33 /* AppDelegate.swift in Sources */,
+				703C51121B2BE6200002AA33 /* CKMathParser.swift in Sources */,
+				703C50E81B2BE5330002AA33 /* CKMathParser_iOS.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		703C50EF1B2BE5330002AA33 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				703C50F81B2BE5330002AA33 /* CKMathParser_iOSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		703C50FA1B2BE5330002AA33 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				703C51031B2BE5330002AA33 /* CKMathParser_iOSUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		703C50F51B2BE5330002AA33 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 703C50DB1B2BE5330002AA33 /* CKMathParser-iOS */;
+			targetProxy = 703C50F41B2BE5330002AA33 /* PBXContainerItemProxy */;
+		};
+		703C51001B2BE5330002AA33 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 703C50DB1B2BE5330002AA33 /* CKMathParser-iOS */;
+			targetProxy = 703C50FF1B2BE5330002AA33 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		703C50E31B2BE5330002AA33 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				703C50E41B2BE5330002AA33 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		703C50EB1B2BE5330002AA33 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				703C50EC1B2BE5330002AA33 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		703C51051B2BE5330002AA33 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		703C51061B2BE5330002AA33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		703C51081B2BE5330002AA33 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "CKMathParser-iOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.connorkrupp.CKMathParser-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		703C51091B2BE5330002AA33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "CKMathParser-iOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.connorkrupp.CKMathParser-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		703C510B1B2BE5330002AA33 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "CKMathParser-iOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.connorkrupp.CKMathParser-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CKMathParser-iOS.app/CKMathParser-iOS";
+			};
+			name = Debug;
+		};
+		703C510C1B2BE5330002AA33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "CKMathParser-iOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.connorkrupp.CKMathParser-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CKMathParser-iOS.app/CKMathParser-iOS";
+			};
+			name = Release;
+		};
+		703C510E1B2BE5330002AA33 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "CKMathParser-iOSUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.connorkrupp.CKMathParser-iOSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = "CKMathParser-iOS";
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		703C510F1B2BE5330002AA33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "CKMathParser-iOSUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.connorkrupp.CKMathParser-iOSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = "CKMathParser-iOS";
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		703C50D71B2BE5330002AA33 /* Build configuration list for PBXProject "CKMathParser-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				703C51051B2BE5330002AA33 /* Debug */,
+				703C51061B2BE5330002AA33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		703C51071B2BE5330002AA33 /* Build configuration list for PBXNativeTarget "CKMathParser-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				703C51081B2BE5330002AA33 /* Debug */,
+				703C51091B2BE5330002AA33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		703C510A1B2BE5330002AA33 /* Build configuration list for PBXNativeTarget "CKMathParser-iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				703C510B1B2BE5330002AA33 /* Debug */,
+				703C510C1B2BE5330002AA33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		703C510D1B2BE5330002AA33 /* Build configuration list for PBXNativeTarget "CKMathParser-iOSUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				703C510E1B2BE5330002AA33 /* Debug */,
+				703C510F1B2BE5330002AA33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		703C50E61B2BE5330002AA33 /* CKMathParser_iOS.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				703C50E71B2BE5330002AA33 /* CKMathParser_iOS.xcdatamodel */,
+			);
+			currentVersion = 703C50E71B2BE5330002AA33 /* CKMathParser_iOS.xcdatamodel */;
+			path = CKMathParser_iOS.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 703C50D41B2BE5330002AA33 /* Project object */;
+}
