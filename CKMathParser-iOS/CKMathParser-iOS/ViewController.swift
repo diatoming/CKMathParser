@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var inputTextField: UITextField!
 
     @IBAction func evaluate(sender: UIButton) {
-        let expression = "245*(a+b)*(a-b)+1"
+        let expression = "2*(1+2)*(2-1)+1"
         outputLabel.text = CKMathParser().evaluate(expression)
     }
 

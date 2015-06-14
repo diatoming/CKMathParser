@@ -8,6 +8,33 @@
 
 import Foundation
 
+extension String {
+    func rangesOfString(findStr:String) -> [Range<String.Index>]? {
+        var arr = [Range<String.Index>]()
+        var startInd = self.startIndex
+        // check first that the first character of search string exists
+        if self.characters.contains(findStr.characters.first!) {
+            // if so set this as the place to start searching
+            startInd = self.characters.indexOf(findStr.characters.first!)!
+        }
+        else {
+            // if not return empty array
+            return nil
+        }
+        var i = distance(self.startIndex, startInd)
+        while i<=self.characters.count-findStr.characters.count {
+            if self[advance(self.startIndex, i)..<advance(self.startIndex, i+findStr.characters.count)] == findStr {
+                arr.append(Range(start:advance(self.startIndex, i),end:advance(self.startIndex, i+findStr.characters.count)))
+                i = i+findStr.characters.count
+            }
+            else {
+                i++
+            }
+        }
+        return arr
+    }
+}
+
 class CKMathParser {
     
     private let operations = CKMathParser.createOperations()
@@ -34,47 +61,61 @@ class CKMathParser {
     
     private func createExpressionTable(expression: String) {
         
-        let op = operations[2]
         
-        getArguments(expression, op: op.name)
-        
-        _ = ExpressionRow(
-            id: self.expressionTable.count+1,
-            function: op.name,
-            maxArguments: op.maxArguments,
-            argumentOneId: nil,
-            argumentOneName: nil,
-            argumentOneValue: nil,
-            argumentTwoId: nil,
-            argumentTwoName: nil,
-            argumentTwoValue: nil,
-            level: op.level,
-            sequence: nil
-        )
-        
-        
-    }
-    
-    private func getArguments(expression: String, op: String) {
         let operationSet = "+-*/"
+        var parantheticalLevel = 0
+        for var index = expression.startIndex; index != expression.endIndex; index = index.successor() {
+            let char = expression[index]
+            if char == "(" {
+                parantheticalLevel += 10
+            } else if char == ")" {
+                parantheticalLevel -= 10
+            }
+            
+            if operationSet.rangeOfString("\(char)") != nil {
+                if let op = operationWithName("\(char)") {
 
-        if let opRange = expression.rangeOfString(op) {
-            var reversedArgument = ""
-            for var index = opRange.startIndex; index != expression.startIndex; index = index.predecessor() {
-                let char = expression[index.predecessor()]
-                if operationSet.rangeOfString("\(char)") == nil {
-                    reversedArgument.append(char)
-                } else {
-                    break;
+                    
+                    expressionTable.append(ExpressionRow(
+                        id: self.expressionTable.count+1,
+                        function: op.name,
+                        maxArguments: op.maxArguments,
+                        argumentOneId: nil,
+                        argumentOneName: nil,
+                        argumentOneValue: (getLeftArgument(index, expression: expression) as NSString).doubleValue,
+                        argumentTwoId: nil,
+                        argumentTwoName: nil,
+                        argumentTwoValue: nil,
+                        level: op.level + parantheticalLevel,
+                        sequence: nil
+                        )
+                    )
                 }
             }
             
-            var argument = ""
-            for scalar in reversedArgument.unicodeScalars {
-                argument = "\(scalar)" + argument
-            }
-            
         }
+        
+    }
+    
+    private func getLeftArgument(index: String.Index, expression: String) -> String {
+        let operationSet = "+-*/"
+        var argument = ""
+        var reversedArgument = ""
+        for var indexx = index; indexx != expression.startIndex; indexx = indexx.predecessor() {
+            let char = expression[indexx.predecessor()]
+            if operationSet.rangeOfString("\(char)") == nil {
+                reversedArgument.append(char)
+            } else {
+                break;
+            }
+        }
+        
+        for scalar in reversedArgument.unicodeScalars {
+            argument = "\(scalar)" + argument
+        }
+        argument = argument.stringByReplacingOccurrencesOfString("(", withString: "")
+        argument = argument.stringByReplacingOccurrencesOfString(")", withString: "")
+        return argument
     }
     
     
@@ -96,6 +137,16 @@ class CKMathParser {
         variables.append(Variable(name: "e", value: M_E))
         
         return variables
+    }
+    
+    private func operationWithName(name: String) -> Operation? {
+        for operation in operations {
+            if operation.name == name {
+                return operation
+            }
+        }
+        
+        return nil
     }
 }
 
