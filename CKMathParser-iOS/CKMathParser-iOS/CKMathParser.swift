@@ -34,7 +34,9 @@ class CKMathParser {
     
     private func createExpressionTable(expression: String) {
         
-        let op = operations[0]
+        let op = operations[2]
+        
+        getArguments(expression, op: op.name)
         
         _ = ExpressionRow(
             id: self.expressionTable.count+1,
@@ -52,6 +54,29 @@ class CKMathParser {
         
         
     }
+    
+    private func getArguments(expression: String, op: String) {
+        let operationSet = "+-*/"
+
+        if let opRange = expression.rangeOfString(op) {
+            var reversedArgument = ""
+            for var index = opRange.startIndex; index != expression.startIndex; index = index.predecessor() {
+                let char = expression[index.predecessor()]
+                if operationSet.rangeOfString("\(char)") == nil {
+                    reversedArgument.append(char)
+                } else {
+                    break;
+                }
+            }
+            
+            var argument = ""
+            for scalar in reversedArgument.unicodeScalars {
+                argument = "\(scalar)" + argument
+            }
+            
+        }
+    }
+    
     
     class func createOperations() -> [Operation] {
         var operations = [Operation]()
