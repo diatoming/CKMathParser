@@ -9,73 +9,60 @@
 import Foundation
 
 extension String {
+    
+    // Returns all ranges of a particular searchString, if none are found, returns nil
     func rangesOfString(findStr:String) -> [Range<String.Index>]? {
-        var arr = [Range<String.Index>]()
-        var startInd = self.startIndex
-        // check first that the first character of search string exists
-        if self.characters.contains(findStr.characters.first!) {
-            // if so set this as the place to start searching
-            startInd = self.characters.indexOf(findStr.characters.first!)!
-        }
-        else {
-            // if not return empty array
-            return nil
-        }
-        var i = distance(self.startIndex, startInd)
-        while i<=self.characters.count-findStr.characters.count {
+        var ranges = [Range<String.Index>]()
+        
+        var i = 0
+        while i <= self.characters.count-findStr.characters.count {
             if self[advance(self.startIndex, i)..<advance(self.startIndex, i+findStr.characters.count)] == findStr {
-                arr.append(Range(start:advance(self.startIndex, i),end:advance(self.startIndex, i+findStr.characters.count)))
+                ranges.append(Range(start:advance(self.startIndex, i),end:advance(self.startIndex, i+findStr.characters.count)))
                 i = i+findStr.characters.count
-            }
-            else {
-                i++
-            }
+            } else { i++ }
         }
-        return arr
+        if ranges.count > 0 { return ranges } else { return nil }
+    }
+    
+    func reverse() -> String {
+        var reversed = ""
+        for scalar in self.unicodeScalars {
+            reversed = "\(scalar)" + reversed
+        }
+        return reversed
     }
 }
 
 class CKMathParser {
     
-    private let operations = CKMathParser.createOperations()
-    private let variables = CKMathParser.createVariables()
-    private var expressionTable = [ExpressionRow]()
+    private let operations = CKMathParser.createOperations() // Loads default operations
+    private let variables = CKMathParser.createVariables() // Loads default variables
+    private var expressionTable = [ExpressionRow]() // Initializes expression table
     
+    //Main public function, takes expression as input and outputs result
     func evaluate(mathExpression: String) -> String {
-        let expression = CKMathParser.cleanInput(mathExpression)
+        let expression = mathExpression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) //Removes extraneous spaces (if any)
         
         createExpressionTable(expression)
-        
-        return expression
-    }
-    
-    class func cleanInput(var expression: String) -> String {
-        expression = expression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-        if expression[expression.startIndex] == "(" && expression[expression.endIndex.predecessor()] == ")" {
-            expression.removeAtIndex(expression.startIndex)
-            expression.removeAtIndex(expression.endIndex.predecessor())
-        }
+        fillExpressionTable()
         
         return expression
     }
     
     private func createExpressionTable(expression: String) {
         
-        
         let operationSet = "+-*/"
         var parantheticalLevel = 0
+        
         for var index = expression.startIndex; index != expression.endIndex; index = index.successor() {
             let char = expression[index]
-            if char == "(" {
-                parantheticalLevel += 10
-            } else if char == ")" {
-                parantheticalLevel -= 10
-            }
+            if char == "(" { parantheticalLevel += 10 }
+            if char == ")" { parantheticalLevel -= 10 }
             
+            // Once finds an operation in the expression, if there is an operation in the library with that name, generates row
             if operationSet.rangeOfString("\(char)") != nil {
                 if let op = operationWithName("\(char)") {
-
-                    
+                
                     expressionTable.append(ExpressionRow(
                         id: self.expressionTable.count+1,
                         function: op.name,
@@ -92,14 +79,25 @@ class CKMathParser {
                     )
                 }
             }
-            
         }
         
+        for var index = expression.endIndex.predecessor(); index != expression.startIndex; index = index.predecessor() {
+            if operationSet.rangeOfString("\(expression[index])") != nil {
+                expressionTable[expressionTable.count-1].argumentTwoValue = (expression.substringWithRange(Range(start: index.successor(), end: expression.endIndex)) as NSString).doubleValue
+                break;
+            }
+        }
     }
     
+    private func fillExpressionTable() {
+        for index in 0..<expressionTable.count-1 {
+            expressionTable[index].argumentTwoValue = expressionTable[index+1].argumentOneValue
+        }
+    }
+    
+    //Gets left argument from a supplied operation index
     private func getLeftArgument(index: String.Index, expression: String) -> String {
         let operationSet = "+-*/"
-        var argument = ""
         var reversedArgument = ""
         for var indexx = index; indexx != expression.startIndex; indexx = indexx.predecessor() {
             let char = expression[indexx.predecessor()]
@@ -110,9 +108,7 @@ class CKMathParser {
             }
         }
         
-        for scalar in reversedArgument.unicodeScalars {
-            argument = "\(scalar)" + argument
-        }
+        var argument = reversedArgument.reverse()
         argument = argument.stringByReplacingOccurrencesOfString("(", withString: "")
         argument = argument.stringByReplacingOccurrencesOfString(")", withString: "")
         return argument
@@ -130,7 +126,7 @@ class CKMathParser {
         return operations
     }
     
-    static func createVariables() -> [Variable] {
+    class func createVariables() -> [Variable] {
         var variables = [Variable]()
         
         variables.append(Variable(name: "pi", value: M_1_PI))
