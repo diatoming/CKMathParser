@@ -45,10 +45,35 @@ class CKMathParser {
         
         createExpressionTable(expression)
         fillExpressionTable()
+        buildExpressionRelationships()
+        calculateSequence()
         
         return expression
     }
     
+    class func createOperations() -> [Operation] {
+        var operations = [Operation]()
+        
+        operations.append(Operation(name: "+", maxArguments: 2, level: 1))
+        operations.append(Operation(name: "-", maxArguments: 2, level: 1))
+        operations.append(Operation(name: "*", maxArguments: 2, level: 2))
+        operations.append(Operation(name: "/", maxArguments: 2, level: 2))
+        
+        return operations
+    }
+    
+    class func createVariables() -> [Variable] {
+        var variables = [Variable]()
+        
+        variables.append(Variable(name: "pi", value: M_1_PI))
+        variables.append(Variable(name: "e", value: M_E))
+        
+        return variables
+    }
+    
+    //
+    // Generates the inital expression table values
+    //
     private func createExpressionTable(expression: String) {
         
         let operationSet = "+-*/"
@@ -64,7 +89,6 @@ class CKMathParser {
                 if let op = operationWithName("\(char)") {
                 
                     expressionTable.append(ExpressionRow(
-                        id: self.expressionTable.count+1,
                         function: op.name,
                         maxArguments: op.maxArguments,
                         argumentOneId: nil,
@@ -73,6 +97,7 @@ class CKMathParser {
                         argumentTwoId: nil,
                         argumentTwoName: nil,
                         argumentTwoValue: nil,
+                        argOf: nil,
                         level: op.level + parantheticalLevel,
                         sequence: nil
                         )
@@ -89,9 +114,66 @@ class CKMathParser {
         }
     }
     
+    //
+    // Fill in the second argument value for each row
+    //
     private func fillExpressionTable() {
         for index in 0..<expressionTable.count-1 {
             expressionTable[index].argumentTwoValue = expressionTable[index+1].argumentOneValue
+        }
+    }
+    
+    //
+    //  Figures out the argOfs for the rows
+    //
+    private func buildExpressionRelationships() {
+        for _ in expressionTable {
+            var largestIndex = 0
+            var largestLevel = 0
+            for (index, row) in expressionTable.enumerate() {
+                if row.level > largestLevel && row.argOf == nil {
+                    largestIndex = index
+                    largestLevel = row.level
+                }
+            }
+            
+            var upperLevel: Int?
+            var lowerLevel: Int?
+            var upperI = 1
+            var lowerI = 1
+            
+            while largestIndex-upperI >= 0 {
+                if expressionTable[largestIndex-upperI].argOf == nil {
+                    upperLevel = expressionTable[largestIndex-upperI].level
+                    break
+                }
+                upperI++
+            }
+            while largestIndex+lowerI < expressionTable.count {
+                if expressionTable[largestIndex+lowerI].argOf == nil {
+                    lowerLevel = expressionTable[largestIndex+lowerI].level
+                    break
+                }
+                lowerI++
+            }
+            
+            if upperLevel > lowerLevel {
+                expressionTable[largestIndex].argOf = largestIndex-upperI
+            } else if upperLevel < lowerLevel {
+                expressionTable[largestIndex].argOf = largestIndex+lowerI
+            } else if upperLevel == lowerLevel && upperLevel != nil && lowerLevel != nil {
+                expressionTable[largestIndex].argOf = largestIndex-upperI
+            }
+
+        }
+    }
+    
+    //
+    // Builds the sequence of operations
+    //
+    private func calculateSequence() {
+        for row in expressionTable {
+            
         }
     }
     
@@ -114,27 +196,6 @@ class CKMathParser {
         return argument
     }
     
-    
-    class func createOperations() -> [Operation] {
-        var operations = [Operation]()
-        
-        operations.append(Operation(name: "+", maxArguments: 2, level: 1))
-        operations.append(Operation(name: "-", maxArguments: 2, level: 1))
-        operations.append(Operation(name: "*", maxArguments: 2, level: 2))
-        operations.append(Operation(name: "/", maxArguments: 2, level: 2))
-        
-        return operations
-    }
-    
-    class func createVariables() -> [Variable] {
-        var variables = [Variable]()
-        
-        variables.append(Variable(name: "pi", value: M_1_PI))
-        variables.append(Variable(name: "e", value: M_E))
-        
-        return variables
-    }
-    
     private func operationWithName(name: String) -> Operation? {
         for operation in operations {
             if operation.name == name {
@@ -148,7 +209,6 @@ class CKMathParser {
 
 
 struct ExpressionRow {
-    let id: Int
     let function: String
     let maxArguments: Int
     
@@ -159,6 +219,8 @@ struct ExpressionRow {
     var argumentTwoId: Int?
     var argumentTwoName: String?
     var argumentTwoValue: Double?
+    
+    var argOf: Int?
     
     let level: Int
     
