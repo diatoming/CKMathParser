@@ -38,7 +38,8 @@ class CKMathParser {
     private let operations = CKMathParser.createOperations() // Loads default operations
     private let variables = CKMathParser.createVariables() // Loads default variables
     private var expressionTable = [ExpressionRow]() // Initializes expression table
-    
+    private var sequenceTable = [Int]()
+
     //Main public function, takes expression as input and outputs result
     func evaluate(mathExpression: String) -> String {
         let expression = mathExpression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) //Removes extraneous spaces (if any)
@@ -47,6 +48,8 @@ class CKMathParser {
         fillExpressionTable()
         buildExpressionRelationships()
         calculateSequence()
+        
+        evaluateExpression()
         
         return expression
     }
@@ -172,9 +175,26 @@ class CKMathParser {
     // Builds the sequence of operations
     //
     private func calculateSequence() {
-        for row in expressionTable {
+        for _ in expressionTable {
+            var largestLevel = 0
+            var largestIndex = 0
+            
+            for (index, row) in expressionTable.enumerate() {
+                if row.level > largestLevel && !sequenceTable.contains(index) {
+                    largestLevel = row.level
+                    largestIndex = index
+                }
+            }
+            sequenceTable.append(largestIndex)
             
         }
+    }
+    
+    //
+    // Evaluates the table
+    //
+    private func evaluateExpression() {
+        
     }
     
     //Gets left argument from a supplied operation index
