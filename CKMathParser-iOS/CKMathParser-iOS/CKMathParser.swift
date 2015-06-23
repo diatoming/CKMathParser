@@ -57,10 +57,10 @@ class CKMathParser {
     class func createOperations() -> [Operation] {
         var operations = [Operation]()
         
-        operations.append(Operation(name: "+", maxArguments: 2, level: 1))
-        operations.append(Operation(name: "-", maxArguments: 2, level: 1))
-        operations.append(Operation(name: "*", maxArguments: 2, level: 2))
-        operations.append(Operation(name: "/", maxArguments: 2, level: 2))
+        operations.append(Operation(name: "+", maxArguments: 2, level: 1, binaryOperation: { $0 + $1 }))
+        operations.append(Operation(name: "-", maxArguments: 2, level: 1, binaryOperation: { $0 - $1 }))
+        operations.append(Operation(name: "*", maxArguments: 2, level: 2, binaryOperation: { $0 * $1 }))
+        operations.append(Operation(name: "/", maxArguments: 2, level: 2, binaryOperation: { $0 / $1 }))
         
         return operations
     }
@@ -194,6 +194,20 @@ class CKMathParser {
     // Evaluates the table
     //
     private func evaluateExpression() {
+        for index in sequenceTable {
+            let row = expressionTable[index]
+            let solution = operationWithName(row.function)!.binaryOperation(row.argumentOneValue!, row.argumentTwoValue!)
+            if let argumentRowIndex = row.argOf {
+                if index > argumentRowIndex {
+                    expressionTable[argumentRowIndex].argumentTwoValue = solution
+                } else {
+                    expressionTable[argumentRowIndex].argumentOneValue = solution
+                }
+            } else {
+                print(solution)
+            }
+        
+        }
         
     }
     
@@ -256,4 +270,6 @@ struct Operation {
     let name: String
     let maxArguments: Int
     let level: Int
+    
+    let binaryOperation: (Double, Double) -> Double
 }
