@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     @IBAction func evaluate(sender: UIButton) {
         var times = [CFAbsoluteTime]()
         var solution = ""
-        for _ in 1...1000 {
+        for _ in 1...1 {
             let expression = inputTextField.text!
             let startTime = CFAbsoluteTimeGetCurrent()
             solution = CKMathParser().evaluate(expression)

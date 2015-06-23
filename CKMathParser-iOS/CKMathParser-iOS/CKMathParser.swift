@@ -35,10 +35,10 @@ extension String {
 
 class CKMathParser {
     
-    private let operations = CKMathParser.createOperations() // Loads default operations
-    private let variables = CKMathParser.createVariables() // Loads default variables
     private var expressionTable = [ExpressionRow]() // Initializes expression table
-    private var sequenceTable = [Int]()
+    private var sequenceOfOperation = [Int]()
+    
+    private var availableOperations = [String:Op]()
     
     private var expression = ""
     
@@ -53,24 +53,14 @@ class CKMathParser {
         return "\(evaluateExpression())"
     }
     
-    class func createOperations() -> [Operation] {
-        var operations = [Operation]()
+    init() {
         
-        operations.append(Operation(name: "+", maxArguments: 2, level: 1, binaryOperation: { $0 + $1 }))
-        operations.append(Operation(name: "-", maxArguments: 2, level: 1, binaryOperation: { $0 - $1 }))
-        operations.append(Operation(name: "*", maxArguments: 2, level: 2, binaryOperation: { $0 * $1 }))
-        operations.append(Operation(name: "/", maxArguments: 2, level: 2, binaryOperation: { $0 / $1 }))
-        
-        return operations
-    }
-    
-    class func createVariables() -> [Variable] {
-        var variables = [Variable]()
-        
-        variables.append(Variable(name: "pi", value: M_1_PI))
-        variables.append(Variable(name: "e", value: M_E))
-        
-        return variables
+        availableOperations["+"] = Op.BinaryOperation("+", 1, { $0 + $1 })
+        availableOperations["-"] = Op.BinaryOperation("-", 1, { $0 - $1 })
+        availableOperations["*"] = Op.BinaryOperation("*", 2, { $0 * $1 })
+        availableOperations["/"] = Op.BinaryOperation("/", 2, { $0 / $1 })
+        availableOperations["^"] = Op.BinaryOperation("^", 3, { pow($0,$1) })
+
     }
     
     //
@@ -78,7 +68,6 @@ class CKMathParser {
     //
     private func createExpressionTable() {
         
-        let operationSet = "+-*/"
         var parantheticalLevel = 0
         
         for var index = expression.startIndex; index != expression.endIndex; index = index.successor() {
@@ -87,12 +76,12 @@ class CKMathParser {
             if char == ")" { parantheticalLevel -= 10 }
             
             // Once finds an operation in the expression, if there is an operation in the library with that name, generates row
-            if let op = operationWithName("\(char)") {
+            if let op = availableOperations["\(char)"] {
                 
                 if !checkForUnaryMinus(index) { // Checks for unary minus
                     expressionTable.append(ExpressionRow(
-                        function: op.name,
-                        maxArguments: op.maxArguments,
+                        function: op.description,
+                        maxArguments: 2,
                         argumentOneId: nil,
                         argumentOneName: nil,
                         argumentOneValue: (getLeftArgument(index) as NSString).doubleValue,
@@ -106,17 +95,18 @@ class CKMathParser {
                     )
                 }
             }
+            
         }
         
         for var index = expression.endIndex.predecessor(); index != expression.startIndex; index = index.predecessor() {
-            
-            if operationSet.rangeOfString("\(expression[index])") != nil {
-                if !(expression[index] == "-" && operationSet.rangeOfString("\(expression[index.predecessor()])") != nil) {
+            if let _ = availableOperations["\(expression[index])"] {
+                if !checkForUnaryMinus(index) {
                     expressionTable[expressionTable.count-1].argumentTwoValue = (expression.substringWithRange(Range(start: index.successor(), end: expression.endIndex)) as NSString).doubleValue
                     break;
                 }
             }
         }
+        
     }
     
     //
@@ -182,12 +172,12 @@ class CKMathParser {
             var largestIndex = 0
             
             for (index, row) in expressionTable.enumerate() {
-                if row.level > largestLevel && !sequenceTable.contains(index) {
+                if row.level > largestLevel && !sequenceOfOperation.contains(index) {
                     largestLevel = row.level
                     largestIndex = index
                 }
             }
-            sequenceTable.append(largestIndex)
+            sequenceOfOperation.append(largestIndex)
             
         }
     }
@@ -196,9 +186,19 @@ class CKMathParser {
     // Evaluates the table
     //
     private func evaluateExpression() -> Double {
-        for index in sequenceTable {
+        for index in sequenceOfOperation {
             let row = expressionTable[index]
-            let solution = operationWithName(row.function)!.binaryOperation(row.argumentOneValue!, row.argumentTwoValue!)
+            var solution = 0.0
+            let operation = availableOperations[row.function]!
+            switch operation {
+            case .UnaryOperation(_, _, let function):
+                solution = function(row.argumentOneValue!)
+            case .BinaryOperation(_, _, let function):
+                solution = function(row.argumentOneValue!, row.argumentTwoValue!)
+            default:
+                print("Could not match function to function type")
+            }
+           
             if let argumentRowIndex = row.argOf {
                 if index > argumentRowIndex {
                     expressionTable[argumentRowIndex].argumentTwoValue = solution
@@ -217,11 +217,10 @@ class CKMathParser {
     //Gets left argument from a supplied operation index
     //
     private func getLeftArgument(index: String.Index) -> String {
-        let operationSet = "+-*/"
         var reversedArgument = ""
-        for var indexx = index; indexx != expression.startIndex; indexx = indexx.predecessor() {
-            let char = expression[indexx.predecessor()]
-            if operationSet.rangeOfString("\(char)") == nil {
+        for var parsingIndex = index; parsingIndex != expression.startIndex; parsingIndex = parsingIndex.predecessor() {
+            let char = expression[parsingIndex.predecessor()]
+            if availableOperations["\(char)"] == nil {
                 reversedArgument.append(char)
             } else {
                 break;
@@ -235,23 +234,10 @@ class CKMathParser {
     }
     
     //
-    //
-    //
-    private func operationWithName(name: String) -> Operation? {
-        for operation in operations {
-            if operation.name == name {
-                return operation
-            }
-        }
-        
-        return nil
-    }
-    
-    //
     // Checks for unary minus
     //
     private func checkForUnaryMinus(index: String.Index) -> Bool {
-        if let _ = operationWithName("\(expression[index.predecessor()])") { return true } else { return false }
+        if let _ = availableOperations["\(expression[index.predecessor()])"] { return true } else { return false }
     }
 }
 
@@ -280,19 +266,11 @@ struct Variable {
     let value: Double?
 }
 
-struct Operation {
-    let name: String
-    let maxArguments: Int
-    let level: Int
-    
-    let binaryOperation: (Double, Double) -> Double
-}
-
 enum Op {
     case Variable(String)
     case Constant(String, Double)
-    case UnaryOperation(String, Double -> Double)
-    case BinaryOperation(String, (Double, Double) -> Double)
+    case UnaryOperation(String, Int, Double -> Double)
+    case BinaryOperation(String, Int, (Double, Double) -> Double)
     
     var isOperation: Bool {
         switch self {
@@ -310,10 +288,25 @@ enum Op {
                 return symbol
             case .Constant(let symbol, _):
                 return symbol
-            case .UnaryOperation(let symbol, _):
+            case .UnaryOperation(let symbol, _,  _):
                 return symbol
-            case .BinaryOperation(let symbol, _):
+            case .BinaryOperation(let symbol, _, _):
                 return symbol
+            }
+        }
+    }
+    
+    var level: Int {
+        get {
+            switch self {
+            case .Variable(_):
+                return 0
+            case .Constant(_, _):
+                return 0
+            case .UnaryOperation(_, let level,  _):
+                return level
+            case .BinaryOperation(_, let level, _):
+                return level
             }
         }
     }
