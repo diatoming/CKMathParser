@@ -39,16 +39,17 @@ class CKMathParser {
     private let variables = CKMathParser.createVariables() // Loads default variables
     private var expressionTable = [ExpressionRow]() // Initializes expression table
     private var sequenceTable = [Int]()
-
+    
+    private var expression = ""
+    
     //Main public function, takes expression as input and outputs result
     func evaluate(mathExpression: String) -> String {
-        let expression = mathExpression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) //Removes extraneous spaces (if any)
+        expression = mathExpression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) //Removes extraneous spaces (if any)
         
-        createExpressionTable(expression)
+        createExpressionTable()
         fillExpressionTable()
         buildExpressionRelationships()
         calculateSequence()
-        
         return "\(evaluateExpression())"
     }
     
@@ -75,7 +76,7 @@ class CKMathParser {
     //
     // Generates the inital expression table values
     //
-    private func createExpressionTable(expression: String) {
+    private func createExpressionTable() {
         
         let operationSet = "+-*/"
         var parantheticalLevel = 0
@@ -84,27 +85,25 @@ class CKMathParser {
             let char = expression[index]
             if char == "(" { parantheticalLevel += 10 }
             if char == ")" { parantheticalLevel -= 10 }
+            
             // Once finds an operation in the expression, if there is an operation in the library with that name, generates row
-            if operationSet.rangeOfString("\(char)") != nil {
-
-                if !(char == "-" && operationSet.rangeOfString("\(expression[index.predecessor()])") != nil) { // Checks for unary minus
-                    if let op = operationWithName("\(char)") {
-                        expressionTable.append(ExpressionRow(
-                            function: op.name,
-                            maxArguments: op.maxArguments,
-                            argumentOneId: nil,
-                            argumentOneName: nil,
-                            argumentOneValue: (getLeftArgument(index, expression: expression) as NSString).doubleValue,
-                            argumentTwoId: nil,
-                            argumentTwoName: nil,
-                            argumentTwoValue: nil,
-                            argOf: nil,
-                            level: op.level + parantheticalLevel,
-                            sequence: nil
-                            )
+            if let op = operationWithName("\(char)") {
+                
+                if !checkForUnaryMinus(index) { // Checks for unary minus
+                    expressionTable.append(ExpressionRow(
+                        function: op.name,
+                        maxArguments: op.maxArguments,
+                        argumentOneId: nil,
+                        argumentOneName: nil,
+                        argumentOneValue: (getLeftArgument(index) as NSString).doubleValue,
+                        argumentTwoId: nil,
+                        argumentTwoName: nil,
+                        argumentTwoValue: nil,
+                        argOf: nil,
+                        level: op.level + parantheticalLevel,
+                        sequence: nil
                         )
-                    }
-
+                    )
                 }
             }
         }
@@ -217,7 +216,7 @@ class CKMathParser {
     //
     //Gets left argument from a supplied operation index
     //
-    private func getLeftArgument(index: String.Index, expression: String) -> String {
+    private func getLeftArgument(index: String.Index) -> String {
         let operationSet = "+-*/"
         var reversedArgument = ""
         for var indexx = index; indexx != expression.startIndex; indexx = indexx.predecessor() {
@@ -246,6 +245,13 @@ class CKMathParser {
         }
         
         return nil
+    }
+    
+    //
+    // Checks for unary minus
+    //
+    private func checkForUnaryMinus(index: String.Index) -> Bool {
+        if let _ = operationWithName("\(expression[index.predecessor()])") { return true } else { return false }
     }
 }
 
@@ -280,4 +286,35 @@ struct Operation {
     let level: Int
     
     let binaryOperation: (Double, Double) -> Double
+}
+
+enum Op {
+    case Variable(String)
+    case Constant(String, Double)
+    case UnaryOperation(String, Double -> Double)
+    case BinaryOperation(String, (Double, Double) -> Double)
+    
+    var isOperation: Bool {
+        switch self {
+        case .UnaryOperation, .BinaryOperation:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    var description: String {
+        get {
+            switch self {
+            case .Variable(let symbol):
+                return symbol
+            case .Constant(let symbol, _):
+                return symbol
+            case .UnaryOperation(let symbol, _):
+                return symbol
+            case .BinaryOperation(let symbol, _):
+                return symbol
+            }
+        }
+    }
 }
