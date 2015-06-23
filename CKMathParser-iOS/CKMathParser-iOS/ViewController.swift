@@ -12,10 +12,24 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var outputLabel: UILabel!
     @IBOutlet weak var inputTextField: UITextField!
+    @IBOutlet weak var textView: UITextView!
 
     @IBAction func evaluate(sender: UIButton) {
-        let expression = inputTextField.text!
-        outputLabel.text = CKMathParser().evaluate(expression)
+        var times = [CFAbsoluteTime]()
+        var solution = ""
+        for _ in 1...1000 {
+            let expression = inputTextField.text!
+            let startTime = CFAbsoluteTimeGetCurrent()
+            solution = CKMathParser().evaluate(expression)
+            let endTime = CFAbsoluteTimeGetCurrent()
+            times.append(endTime-startTime)
+        }
+        var sum = 0.0
+        for val in times {
+            sum += val
+        }
+        textView.text = textView.text + "\n\(sum/Double(times.count))"
+        outputLabel.text = solution
     }
 
 }
