@@ -49,9 +49,7 @@ class CKMathParser {
         buildExpressionRelationships()
         calculateSequence()
         
-        evaluateExpression()
-        
-        return expression
+        return "\(evaluateExpression())"
     }
     
     class func createOperations() -> [Operation] {
@@ -86,33 +84,38 @@ class CKMathParser {
             let char = expression[index]
             if char == "(" { parantheticalLevel += 10 }
             if char == ")" { parantheticalLevel -= 10 }
-            
             // Once finds an operation in the expression, if there is an operation in the library with that name, generates row
             if operationSet.rangeOfString("\(char)") != nil {
-                if let op = operationWithName("\(char)") {
-                
-                    expressionTable.append(ExpressionRow(
-                        function: op.name,
-                        maxArguments: op.maxArguments,
-                        argumentOneId: nil,
-                        argumentOneName: nil,
-                        argumentOneValue: (getLeftArgument(index, expression: expression) as NSString).doubleValue,
-                        argumentTwoId: nil,
-                        argumentTwoName: nil,
-                        argumentTwoValue: nil,
-                        argOf: nil,
-                        level: op.level + parantheticalLevel,
-                        sequence: nil
+
+                if !(char == "-" && operationSet.rangeOfString("\(expression[index.predecessor()])") != nil) { // Checks for unary minus
+                    if let op = operationWithName("\(char)") {
+                        expressionTable.append(ExpressionRow(
+                            function: op.name,
+                            maxArguments: op.maxArguments,
+                            argumentOneId: nil,
+                            argumentOneName: nil,
+                            argumentOneValue: (getLeftArgument(index, expression: expression) as NSString).doubleValue,
+                            argumentTwoId: nil,
+                            argumentTwoName: nil,
+                            argumentTwoValue: nil,
+                            argOf: nil,
+                            level: op.level + parantheticalLevel,
+                            sequence: nil
+                            )
                         )
-                    )
+                    }
+
                 }
             }
         }
         
         for var index = expression.endIndex.predecessor(); index != expression.startIndex; index = index.predecessor() {
+            
             if operationSet.rangeOfString("\(expression[index])") != nil {
-                expressionTable[expressionTable.count-1].argumentTwoValue = (expression.substringWithRange(Range(start: index.successor(), end: expression.endIndex)) as NSString).doubleValue
-                break;
+                if !(expression[index] == "-" && operationSet.rangeOfString("\(expression[index.predecessor()])") != nil) {
+                    expressionTable[expressionTable.count-1].argumentTwoValue = (expression.substringWithRange(Range(start: index.successor(), end: expression.endIndex)) as NSString).doubleValue
+                    break;
+                }
             }
         }
     }
@@ -193,7 +196,7 @@ class CKMathParser {
     //
     // Evaluates the table
     //
-    private func evaluateExpression() {
+    private func evaluateExpression() -> Double {
         for index in sequenceTable {
             let row = expressionTable[index]
             let solution = operationWithName(row.function)!.binaryOperation(row.argumentOneValue!, row.argumentTwoValue!)
@@ -204,14 +207,16 @@ class CKMathParser {
                     expressionTable[argumentRowIndex].argumentOneValue = solution
                 }
             } else {
-                print(solution)
+                return solution
             }
         
         }
-        
+        return 0
     }
     
+    //
     //Gets left argument from a supplied operation index
+    //
     private func getLeftArgument(index: String.Index, expression: String) -> String {
         let operationSet = "+-*/"
         var reversedArgument = ""
@@ -230,6 +235,9 @@ class CKMathParser {
         return argument
     }
     
+    //
+    //
+    //
     private func operationWithName(name: String) -> Operation? {
         for operation in operations {
             if operation.name == name {
