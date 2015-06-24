@@ -39,6 +39,7 @@ class CKMathParser {
     private var sequenceOfOperation = [Int]()
     
     private var availableOperations = [String:Op]()
+    private var availableConstants = [String:Constant]()
     
     private var expression = ""
     
@@ -61,6 +62,8 @@ class CKMathParser {
         availableOperations["/"] = Op.BinaryOperation("/", 2, { $0 / $1 })
         availableOperations["^"] = Op.BinaryOperation("^", 3, { pow($0,$1) })
 
+        availableConstants["π"] = Constant(name: "π", value: M_1_PI)
+        availableConstants["e"] = Constant(name: "e", value: M_E)
     }
     
     //
@@ -72,6 +75,7 @@ class CKMathParser {
         
         for var index = expression.startIndex; index != expression.endIndex; index = index.successor() {
             let char = expression[index]
+            
             if char == "(" { parantheticalLevel += 10 }
             if char == ")" { parantheticalLevel -= 10 }
             
@@ -195,8 +199,6 @@ class CKMathParser {
                 solution = function(row.argumentOneValue!)
             case .BinaryOperation(_, _, let function):
                 solution = function(row.argumentOneValue!, row.argumentTwoValue!)
-            default:
-                print("Could not match function to function type")
             }
            
             if let argumentRowIndex = row.argOf {
@@ -261,33 +263,18 @@ struct ExpressionRow {
     var sequence: Int?
 }
 
-struct Variable {
+struct Constant {
     let name: String
-    let value: Double?
+    let value: Double
 }
 
 enum Op {
-    case Variable(String)
-    case Constant(String, Double)
     case UnaryOperation(String, Int, Double -> Double)
     case BinaryOperation(String, Int, (Double, Double) -> Double)
-    
-    var isOperation: Bool {
-        switch self {
-        case .UnaryOperation, .BinaryOperation:
-            return true
-        default:
-            return false
-        }
-    }
     
     var description: String {
         get {
             switch self {
-            case .Variable(let symbol):
-                return symbol
-            case .Constant(let symbol, _):
-                return symbol
             case .UnaryOperation(let symbol, _,  _):
                 return symbol
             case .BinaryOperation(let symbol, _, _):
@@ -299,10 +286,6 @@ enum Op {
     var level: Int {
         get {
             switch self {
-            case .Variable(_):
-                return 0
-            case .Constant(_, _):
-                return 0
             case .UnaryOperation(_, let level,  _):
                 return level
             case .BinaryOperation(_, let level, _):
@@ -311,3 +294,5 @@ enum Op {
         }
     }
 }
+
+
