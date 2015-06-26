@@ -16,7 +16,7 @@ class ViewController: UIViewController {
 
     @IBAction func evaluate(sender: UIButton) {
         var solution = ""
-        let expression = "245+(2*3)/sin(30+30)-14"        
+        let expression = "(4+8)^4+(2+3^4)*sin((22/7)/2)"
         let startTime = CFAbsoluteTimeGetCurrent()
         solution = CKMathParser().evaluate(expression)
         let endTime = CFAbsoluteTimeGetCurrent()

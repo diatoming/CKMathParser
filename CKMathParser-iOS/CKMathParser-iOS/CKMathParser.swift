@@ -31,6 +31,10 @@ extension String {
         }
         return reversed
     }
+    
+    func toDouble() -> Double? {
+        return NSNumberFormatter().numberFromString(self)?.doubleValue
+    }
 }
 
 class CKMathParser {
@@ -48,6 +52,9 @@ class CKMathParser {
         expression = mathExpression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) //Removes extraneous spaces (if any)
         
         createExpressionTable()
+        buildExpressionRelationships()
+        calculateSequence()
+        evaluateExpression()
         
         return "hello"
     }
@@ -59,7 +66,7 @@ class CKMathParser {
         availableOperations["*"] = Op.BinaryOperation("*", 2, { $0 * $1 })
         availableOperations["/"] = Op.BinaryOperation("/", 2, { $0 / $1 })
         availableOperations["^"] = Op.BinaryOperation("^", 3, { pow($0,$1) })
-        availableOperations["sin"] = Op.UnaryOperation("sin", 3, { sin($0) })
+        availableOperations["sin"] = Op.UnaryOperation("sin", 10, { sin($0) })
 
         availableConstants["π"] = Constant(name: "π", value: M_1_PI)
         availableConstants["e"] = Constant(name: "e", value: M_E)
@@ -88,7 +95,6 @@ class CKMathParser {
             expressionTable.append(ExpressionRow(operation: operation, arguments: getArguments(range, operation: operation), level: getLevel(range, operation: operation)))
         }
         
-        
     }
     
     func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
@@ -108,120 +114,121 @@ class CKMathParser {
                 argument.append(character)
             } else { break; }
         }
-        return nil
+        if argument == "" || stoppingValues.contains(argument) {
+            return nil
+        }
+        return argument
     }
     
     func getArguments(functionRange: Range<String.Index>, operation: Op) -> [String?] {
         switch operation {
         case .BinaryOperation:
-            let startOfExpression = expression.substringToIndex(functionRange.startIndex).reverse()
+            let leftArgument = getSideArgument(expression.substringToIndex(functionRange.startIndex).reverse())?.reverse()
+            let rightArgument = getSideArgument(expression.substringFromIndex(functionRange.endIndex))
             
-            let leftArgument = getSideArgument(expression.substringToIndex(functionRange.startIndex).reverse())
-            
-            let restOfExpression = expression.substringFromIndex(functionRange.endIndex)
-            
-            
-            return [nil, nil]
+            return [leftArgument, rightArgument]
         case .UnaryOperation:
-            //        let restOfExpression = expression.substringFromIndex(functionRange.endIndex.successor())
-            //        let relevantExpression = restOfExpression.substringToIndex(restOfExpression.rangeOfString(")")!.startIndex)
             return [nil]
-            
         }
     }
     
     //
     //  Figures out the argOfs for the rows
     //
-//    private func buildExpressionRelationships() {
-//        for _ in expressionTable {
-//            var largestIndex = 0
-//            var largestLevel = 0
-//            for (index, row) in expressionTable.enumerate() {
-//                if row.level > largestLevel && row.argOf == nil {
-//                    largestIndex = index
-//                    largestLevel = row.level
-//                }
-//            }
-//            
-//            var upperLevel: Int?
-//            var lowerLevel: Int?
-//            var upperI = 1
-//            var lowerI = 1
-//            
-//            while largestIndex-upperI >= 0 {
-//                if expressionTable[largestIndex-upperI].argOf == nil {
-//                    upperLevel = expressionTable[largestIndex-upperI].level
-//                    break
-//                }
-//                upperI++
-//            }
-//            while largestIndex+lowerI < expressionTable.count {
-//                if expressionTable[largestIndex+lowerI].argOf == nil {
-//                    lowerLevel = expressionTable[largestIndex+lowerI].level
-//                    break
-//                }
-//                lowerI++
-//            }
-//            
-//            if upperLevel > lowerLevel {
-//                expressionTable[largestIndex].argOf = largestIndex-upperI
-//            } else if upperLevel < lowerLevel {
-//                expressionTable[largestIndex].argOf = largestIndex+lowerI
-//            } else if upperLevel == lowerLevel && upperLevel != nil && lowerLevel != nil {
-//                expressionTable[largestIndex].argOf = largestIndex-upperI
-//            }
-//
-//        }
-//    }
+    private func buildExpressionRelationships() {
+        for _ in expressionTable {
+            var largestIndex = 0
+            var largestLevel = 0
+            for (index, row) in expressionTable.enumerate() {
+                if row.level > largestLevel && row.argOf == nil {
+                    largestIndex = index
+                    largestLevel = row.level
+                }
+            }
+            
+            var upperLevel: Int?
+            var lowerLevel: Int?
+            var upperI = 1
+            var lowerI = 1
+            
+            while largestIndex-upperI >= 0 {
+                if expressionTable[largestIndex-upperI].argOf == nil {
+                    upperLevel = expressionTable[largestIndex-upperI].level
+                    break
+                }
+                upperI++
+            }
+            while largestIndex+lowerI < expressionTable.count {
+                if expressionTable[largestIndex+lowerI].argOf == nil {
+                    lowerLevel = expressionTable[largestIndex+lowerI].level
+                    break
+                }
+                lowerI++
+            }
+            
+            if upperLevel > lowerLevel {
+                expressionTable[largestIndex].argOf = largestIndex-upperI
+            } else if upperLevel < lowerLevel {
+                expressionTable[largestIndex].argOf = largestIndex+lowerI
+            } else if upperLevel == lowerLevel && upperLevel != nil && lowerLevel != nil {
+                expressionTable[largestIndex].argOf = largestIndex-upperI
+            }
+
+        }
+    }
     
     //
     // Builds the sequence of operations
     //
-//    private func calculateSequence() {
-//        for _ in expressionTable {
-//            var largestLevel = 0
-//            var largestIndex = 0
-//            
-//            for (index, row) in expressionTable.enumerate() {
-//                if row.level > largestLevel && !sequenceOfOperation.contains(index) {
-//                    largestLevel = row.level
-//                    largestIndex = index
-//                }
-//            }
-//            sequenceOfOperation.append(largestIndex)
-//            
-//        }
-//    }
+    private func calculateSequence() {
+        for _ in expressionTable {
+            var largestLevel = 0
+            var largestIndex = 0
+            
+            for (index, row) in expressionTable.enumerate() {
+                if row.level > largestLevel && !sequenceOfOperation.contains(index) {
+                    largestLevel = row.level
+                    largestIndex = index
+                }
+            }
+            sequenceOfOperation.append(largestIndex)
+            
+        }
+    }
     
     //
     // Evaluates the table
     //
-//    private func evaluateExpression() -> Double {
-//        for index in sequenceOfOperation {
-//            let row = expressionTable[index]
-//            var solution = 0.0
-//            let operation = availableOperations[row.function]!
-//            switch operation {
-//            case .UnaryOperation(_, _, let function):
-//                solution = function(row.argumentOneValue!)
-//            case .BinaryOperation(_, _, let function):
-//                solution = function(row.argumentOneValue!, row.argumentTwoValue!)
-//            }
-//           
-//            if let argumentRowIndex = row.argOf {
-//                if index > argumentRowIndex {
-//                    expressionTable[argumentRowIndex].argumentTwoValue = solution
-//                } else {
-//                    expressionTable[argumentRowIndex].argumentOneValue = solution
-//                }
-//            } else {
-//                return solution
-//            }
-//        
-//        }
-//        return 0
-//    }
+    private func evaluateExpression() {
+        for index in sequenceOfOperation {
+            let row = expressionTable[index]
+            var solution = 0.0
+            switch row.operation {
+            case .BinaryOperation(_, _, let function):
+                solution = function(row.arguments[0]!.toDouble()!, row.arguments[1]!.toDouble()!)
+            case .UnaryOperation(_, _, let function):
+                solution = function(row.arguments[0]!.toDouble()!)
+            }
+            print(solution)
+            if let argumentRowIndex = row.argOf {
+                
+                
+                
+                if index > argumentRowIndex {
+                    switch expressionTable[argumentRowIndex].operation {
+                    case .UnaryOperation:
+                        expressionTable[argumentRowIndex].arguments[0] = "\(solution)"
+                    case .BinaryOperation:
+                        expressionTable[argumentRowIndex].arguments[1] = "\(solution)"
+                    }
+                } else {
+                    expressionTable[argumentRowIndex].arguments[0] = "\(solution)"
+                }
+            } else {
+                print(solution)
+            }
+        }
+    }
     
 }
 
