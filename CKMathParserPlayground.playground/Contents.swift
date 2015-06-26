@@ -91,7 +91,7 @@ func getLevel(range: Range<String.Index>, operation: Op) -> Int {
 }
 
 // Remove unary minuses from ranges
-
+// Get arguments
 func createExpressionTable() {
     
     //Gets function ranges and sorts them into order of use in expression
@@ -103,6 +103,7 @@ func createExpressionTable() {
             }
         }
     }
+    
     ranges = ranges.sort({ $0.startIndex < $1.startIndex})
     
     for range in ranges {
@@ -110,10 +111,11 @@ func createExpressionTable() {
         expressionTable.append(ExpressionRow(operation: operation, arguments: [], level: getLevel(range, operation: operation)))
     }
     
+    
 }
 
 createExpressionTable()
-
+expressionTable
 
 
 
