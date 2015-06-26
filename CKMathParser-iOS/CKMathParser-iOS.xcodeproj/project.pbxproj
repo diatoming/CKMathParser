@@ -105,8 +105,8 @@
 			children = (
 				703C50DF1B2BE5330002AA33 /* AppDelegate.swift */,
 				703C50E11B2BE5330002AA33 /* ViewController.swift */,
-				70D83EAE1B3D13E800298DA0 /* CKDataTypes.swift */,
 				703C51111B2BE6200002AA33 /* CKMathParser.swift */,
+				70D83EAE1B3D13E800298DA0 /* CKDataTypes.swift */,
 				703C50E31B2BE5330002AA33 /* Main.storyboard */,
 				703C51101B2BE5620002AA33 /* Supporting Files */,
 			);

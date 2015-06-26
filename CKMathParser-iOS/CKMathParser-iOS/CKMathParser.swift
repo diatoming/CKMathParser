@@ -54,9 +54,8 @@ class CKMathParser {
         createExpressionTable()
         buildExpressionRelationships()
         calculateSequence()
-        evaluateExpression()
         
-        return "hello"
+        return "\(evaluateExpression())"
     }
     
     init() {
@@ -67,6 +66,9 @@ class CKMathParser {
         availableOperations["/"] = Op.BinaryOperation("/", 2, { $0 / $1 })
         availableOperations["^"] = Op.BinaryOperation("^", 3, { pow($0,$1) })
         availableOperations["sin"] = Op.UnaryOperation("sin", 10, { sin($0) })
+        availableOperations["cos"] = Op.UnaryOperation("cos", 10, { cos($0) })
+        availableOperations["tan"] = Op.UnaryOperation("tan", 10, { tan($0) })
+        availableOperations["log"] = Op.UnaryOperation("log", 10, { log($0) })
 
         availableConstants["π"] = Constant(name: "π", value: M_1_PI)
         availableConstants["e"] = Constant(name: "e", value: M_E)
@@ -81,6 +83,11 @@ class CKMathParser {
         var ranges = [Range<String.Index>]()
         for operation in availableOperations.keys {
             if let unsortedRanges = expression.rangesOfString(operation) {
+                if operation == "-" {
+                    for range in unsortedRanges {
+                        isUnaryMinus(range)
+                    }
+                }
                 for range in unsortedRanges {
                     ranges.append(range)
                 }
@@ -97,7 +104,23 @@ class CKMathParser {
         
     }
     
-    func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
+    private func isUnaryMinus(range: Range<String.Index>) -> Bool {
+        let stoppingValues = availableOperations.keys.array + ["(", ")"]
+        var argument = ""
+        for character in expression.substringToIndex(range.startIndex).unicodeScalars.reverse() {
+            //print(character)
+            if !stoppingValues.contains("\(character)") {
+                //print(character)
+                argument.append(character)
+            } else { break; }
+        }
+        if argument == "" || stoppingValues.contains(argument) {
+            return false
+        }
+
+        return true
+    }
+    private func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
         var level = 0
         for character in expression.substringToIndex(functionRange.startIndex).unicodeScalars {
             if character == "(" { level += 10 }
@@ -106,7 +129,7 @@ class CKMathParser {
         return level + operation.level
     }
     
-    func getSideArgument(relevantString: String) -> String? {
+    private func getSideArgument(relevantString: String) -> String? {
         let stoppingValues = availableOperations.keys.array + ["(", ")"]
         var argument = ""
         for character in relevantString.unicodeScalars {
@@ -120,7 +143,7 @@ class CKMathParser {
         return argument
     }
     
-    func getArguments(functionRange: Range<String.Index>, operation: Op) -> [String?] {
+    private func getArguments(functionRange: Range<String.Index>, operation: Op) -> [String?] {
         switch operation {
         case .BinaryOperation:
             let leftArgument = getSideArgument(expression.substringToIndex(functionRange.startIndex).reverse())?.reverse()
@@ -128,7 +151,9 @@ class CKMathParser {
             
             return [leftArgument, rightArgument]
         case .UnaryOperation:
-            return [nil]
+            let rightArgument = getSideArgument(expression.substringFromIndex(functionRange.endIndex.successor()))
+        
+            return [rightArgument]
         }
     }
     
@@ -199,7 +224,7 @@ class CKMathParser {
     //
     // Evaluates the table
     //
-    private func evaluateExpression() {
+    private func evaluateExpression() -> Double {
         for index in sequenceOfOperation {
             let row = expressionTable[index]
             var solution = 0.0
@@ -209,10 +234,7 @@ class CKMathParser {
             case .UnaryOperation(_, _, let function):
                 solution = function(row.arguments[0]!.toDouble()!)
             }
-            print(solution)
             if let argumentRowIndex = row.argOf {
-                
-                
                 
                 if index > argumentRowIndex {
                     switch expressionTable[argumentRowIndex].operation {
@@ -225,9 +247,10 @@ class CKMathParser {
                     expressionTable[argumentRowIndex].arguments[0] = "\(solution)"
                 }
             } else {
-                print(solution)
+                return solution
             }
         }
+        return -1.0
     }
     
 }
