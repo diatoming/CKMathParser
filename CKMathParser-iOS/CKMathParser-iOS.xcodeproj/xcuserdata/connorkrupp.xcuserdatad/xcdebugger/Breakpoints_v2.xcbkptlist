@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CKMathParser-iOS/CKMathParser.swift"
-            timestampString = "456971932.493612"
+            timestampString = "456987760.574963"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
             landmarkName = "createExpressionTable()"
             landmarkType = "5">
          </BreakpointContent>

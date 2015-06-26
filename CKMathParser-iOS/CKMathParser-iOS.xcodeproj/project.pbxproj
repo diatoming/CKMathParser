@@ -16,6 +16,7 @@
 		703C50F81B2BE5330002AA33 /* CKMathParser_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C50F71B2BE5330002AA33 /* CKMathParser_iOSTests.swift */; };
 		703C51031B2BE5330002AA33 /* CKMathParser_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C51021B2BE5330002AA33 /* CKMathParser_iOSUITests.swift */; };
 		703C51121B2BE6200002AA33 /* CKMathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C51111B2BE6200002AA33 /* CKMathParser.swift */; };
+		70D83EAF1B3D13E800298DA0 /* CKDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D83EAE1B3D13E800298DA0 /* CKDataTypes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		703C51021B2BE5330002AA33 /* CKMathParser_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CKMathParser_iOSUITests.swift; sourceTree = "<group>"; };
 		703C51041B2BE5330002AA33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		703C51111B2BE6200002AA33 /* CKMathParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKMathParser.swift; sourceTree = "<group>"; };
+		70D83EAE1B3D13E800298DA0 /* CKDataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKDataTypes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 			children = (
 				703C50DF1B2BE5330002AA33 /* AppDelegate.swift */,
 				703C50E11B2BE5330002AA33 /* ViewController.swift */,
+				70D83EAE1B3D13E800298DA0 /* CKDataTypes.swift */,
 				703C51111B2BE6200002AA33 /* CKMathParser.swift */,
 				703C50E31B2BE5330002AA33 /* Main.storyboard */,
 				703C51101B2BE5620002AA33 /* Supporting Files */,
@@ -269,6 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70D83EAF1B3D13E800298DA0 /* CKDataTypes.swift in Sources */,
 				703C50E21B2BE5330002AA33 /* ViewController.swift in Sources */,
 				703C50E01B2BE5330002AA33 /* AppDelegate.swift in Sources */,
 				703C51121B2BE6200002AA33 /* CKMathParser.swift in Sources */,
@@ -499,6 +503,7 @@
 				703C51091B2BE5330002AA33 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		703C510A1B2BE5330002AA33 /* Build configuration list for PBXNativeTarget "CKMathParser-iOSTests" */ = {
 			isa = XCConfigurationList;
@@ -507,6 +512,7 @@
 				703C510C1B2BE5330002AA33 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		703C510D1B2BE5330002AA33 /* Build configuration list for PBXNativeTarget "CKMathParser-iOSUITests" */ = {
 			isa = XCConfigurationList;
@@ -515,6 +521,7 @@
 				703C510F1B2BE5330002AA33 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

@@ -81,13 +81,43 @@ availableOperations["sin"] = Op.UnaryOperation("sin", 3, { sin($0) })
 
 let expression = "245+(2*3)+sin(30+30)"
 
-func getLevel(range: Range<String.Index>, operation: Op) -> Int {
+func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
     var level = 0
-    for character in expression.substringToIndex(range.startIndex).unicodeScalars {
+    for character in expression.substringToIndex(functionRange.startIndex).unicodeScalars {
         if character == "(" { level += 10 }
         if character == ")" { level -= 10 }
     }
     return level + operation.level
+}
+
+func getSideArgument(relevantString: String) -> String? {
+    let stoppingValues = availableOperations.keys.array + ["(", ")"]
+    var argument = ""
+    for character in relevantString.unicodeScalars {
+        if !stoppingValues.contains("\(character)") {
+            argument.append(character)
+        } else { break; }
+    }
+    argument
+}
+
+func getArguments(functionRange: Range<String.Index>, operation: Op) -> [String?] {
+    switch operation {
+    case .BinaryOperation:
+        let startOfExpression = expression.substringToIndex(functionRange.startIndex).reverse()
+        
+        leftArgument = getSideArgument(expression.substringToIndex(functionRange.startIndex).reverse())
+        
+        let restOfExpression = expression.substringFromIndex(functionRange.endIndex)
+        
+
+        return [nil, nil]
+    case .UnaryOperation:
+//        let restOfExpression = expression.substringFromIndex(functionRange.endIndex.successor())
+//        let relevantExpression = restOfExpression.substringToIndex(restOfExpression.rangeOfString(")")!.startIndex)
+        return [nil]
+        
+    }
 }
 
 // Remove unary minuses from ranges
@@ -106,16 +136,19 @@ func createExpressionTable() {
     
     ranges = ranges.sort({ $0.startIndex < $1.startIndex})
     
+    
     for range in ranges {
         let operation = availableOperations[expression[range]]!
-        expressionTable.append(ExpressionRow(operation: operation, arguments: [], level: getLevel(range, operation: operation)))
+        expressionTable.append(ExpressionRow(operation: operation, arguments: getArguments(range, operation: operation), level: getLevel(range, operation: operation)))
     }
     
     
 }
 
+//let expression = "245+(2*3)+sin(30+30)"
+
 createExpressionTable()
-expressionTable
+expressionTable[2].arguments
 
 
 

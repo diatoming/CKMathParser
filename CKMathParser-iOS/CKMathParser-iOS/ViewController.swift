@@ -15,20 +15,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
 
     @IBAction func evaluate(sender: UIButton) {
-        var times = [CFAbsoluteTime]()
         var solution = ""
-        for _ in 1...1 {
-            let expression = inputTextField.text!
-            let startTime = CFAbsoluteTimeGetCurrent()
-            solution = CKMathParser().evaluate(expression)
-            let endTime = CFAbsoluteTimeGetCurrent()
-            times.append(endTime-startTime)
-        }
-        var sum = 0.0
-        for val in times {
-            sum += val
-        }
-        textView.text = textView.text + "\n\(sum/Double(times.count))"
+        let expression = "245+(2*3)/sin(30+30)-14"        
+        let startTime = CFAbsoluteTimeGetCurrent()
+        solution = CKMathParser().evaluate(expression)
+        let endTime = CFAbsoluteTimeGetCurrent()
+        
+        textView.text = textView.text + "\n\(endTime-startTime))"
         outputLabel.text = solution
     }
 
