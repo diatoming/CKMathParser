@@ -61,6 +61,7 @@ class CKMathParser {
         availableOperations["*"] = Op.BinaryOperation("*", 2, { $0 * $1 })
         availableOperations["/"] = Op.BinaryOperation("/", 2, { $0 / $1 })
         availableOperations["^"] = Op.BinaryOperation("^", 3, { pow($0,$1) })
+        availableOperations["Sin"] = Op.UnaryOperation("Sin", 3, { sin($0) })
 
         availableConstants["π"] = Constant(name: "π", value: M_1_PI)
         availableConstants["e"] = Constant(name: "e", value: M_E)
