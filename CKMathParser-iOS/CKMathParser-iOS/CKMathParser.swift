@@ -81,26 +81,17 @@ class CKMathParser {
         
         //Gets function ranges and sorts them into order of use in expression
         var ranges = [Range<String.Index>]()
-        for operation in availableOperations.keys {
-            if let unsortedRanges = expression.rangesOfString(operation) {
-                if operation == "-" {
-                    for range in unsortedRanges {
-                        isUnaryMinus(range)
-                    }
-                }
+        for operation in availableOperations.values {
+            if let unsortedRanges = expression.rangesOfString(operation.description) {
                 for range in unsortedRanges {
                     ranges.append(range)
+                    expressionTable.append(ExpressionRow(operation: availableOperations[expression[range]]!, arguments: getArguments(range, operation: operation), level: getLevel(range, operation: operation), rangeInExpression: range))
                 }
             }
         }
+        expressionTable = expressionTable.sort({ $0.rangeInExpression.startIndex < $1.rangeInExpression.startIndex })
         
         ranges = ranges.sort({ $0.startIndex < $1.startIndex})
-        
-        
-        for range in ranges {
-            let operation = availableOperations[expression[range]]!
-            expressionTable.append(ExpressionRow(operation: operation, arguments: getArguments(range, operation: operation), level: getLevel(range, operation: operation)))
-        }
         
     }
     
@@ -108,9 +99,7 @@ class CKMathParser {
         let stoppingValues = availableOperations.keys.array + ["(", ")"]
         var argument = ""
         for character in expression.substringToIndex(range.startIndex).unicodeScalars.reverse() {
-            //print(character)
             if !stoppingValues.contains("\(character)") {
-                //print(character)
                 argument.append(character)
             } else { break; }
         }

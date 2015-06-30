@@ -13,14 +13,16 @@ struct ExpressionRow {
     let operation: Op
     var arguments: [String?]
     let level: Int
-    
+    let rangeInExpression: Range<String.Index>
+
     var argOf: Int?
     var sequence: Int?
     
-    init(operation: Op, arguments: [String?], level: Int) {
+    init(operation: Op, arguments: [String?], level: Int, rangeInExpression: Range<String.Index>) {
         self.operation = operation
         self.arguments = arguments
         self.level = level
+        self.rangeInExpression = rangeInExpression
         self.argOf = nil
         self.sequence = nil
     }
