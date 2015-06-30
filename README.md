@@ -7,6 +7,10 @@ CKMathParser is a **math expression parser** built with the **Swift 2.0** progra
 * Support major singe parameter functions (sin, cos, log, etc)
 * Support major fundamental constants (e, pi, etc) and user defined constants.
 * Be easily extensible to add support for more functions and constants
+* Provide meaningful error messages
+
+#### Be Warned!
+Currently my code is extremely dirty and incomplete. I have been going back and forth between different parsing methods and optimizations. I want to have a very readable, well commented, and error free program so just give me some time to sort it out.
  
 #### Installing CKMathParser
 While the end goal is to convert this project to an importable framework, for testing purposes the appropriate .swift files are contained in a test iOS project. If you want to try out the parser now with its limited functionality, instructions are as follows:
@@ -42,20 +46,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 #### Documentation
-Documentation will eventually be in the wiki but for now here is some basic info:
-
-Available Operators:
+Documentation will eventually be in the wiki but first I have to finish basic functionality.
 
 
-| Operator | Function          | Status              |
-|----------|-------------------|---------------------|
-| +        | Addition          | Fully functional    |
-| -        | Subtraction       | Can not yet negate  |
-| *        | Multiply          | Fully functional    |
-| /        | Divide            | Fully functional    |
-| ^        | Exponentiation    | Not yet implemented |
-| (        | Open Parantheses  | Not yet implemented |
-| )        | Close Parantheses | Not yet implemented |
-| %        | Percent           | Not yet implemented |
-| !        | Factorial         | Not yet implemented |
 
