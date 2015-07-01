@@ -69,13 +69,14 @@ class CKMathParser {
         availableOperations["*"] = Op.BinaryOperation("*", 2, { $0 * $1 })
         availableOperations["/"] = Op.BinaryOperation("/", 2, { $0 / $1 })
         availableOperations["^"] = Op.BinaryOperation("^", 3, { pow($0,$1) })
-        availableOperations["sin"] = Op.UnaryOperation("sin", 10, { sin($0) })
-        availableOperations["cos"] = Op.UnaryOperation("cos", 10, { cos($0) })
-        availableOperations["tan"] = Op.UnaryOperation("tan", 10, { tan($0) })
-        availableOperations["log"] = Op.UnaryOperation("log", 10, { log($0) })
+        availableOperations["sin("] = Op.UnaryOperation("sin(", 10, { sin($0) })
+        availableOperations["cos("] = Op.UnaryOperation("cos(", 10, { cos($0) })
+        availableOperations["tan("] = Op.UnaryOperation("tan(", 10, { tan($0) })
+        availableOperations["log("] = Op.UnaryOperation("log(", 10, { log($0) })
 
         availableConstants["π"] = Constant(name: "π", value: M_1_PI)
         availableConstants["e"] = Constant(name: "e", value: M_E)
+        availableConstants["sincos"] = Constant(name: "sincos", value: 2)
     }
 
     //
@@ -147,6 +148,8 @@ class CKMathParser {
             } else { break }
         }
         if argument == "" || stoppingValues.contains(argument) { return nil }
+        if let value = availableConstants[argument] { return "\(value.value)" }
+
         return argument
     }
     
@@ -169,6 +172,8 @@ class CKMathParser {
             } else { break }
         }
         if argument == "" || stoppingValues.contains(argument) { return nil }
+        if let value = availableConstants[argument] { return "\(value.value)" }
+        
         return argument
     }
     
