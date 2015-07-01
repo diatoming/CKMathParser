@@ -10,7 +10,7 @@ import Foundation
 
 extension String {
     
-    // Returns all ranges of a particular searchString, if none are found, returns nil
+    // Returns all ranges of a particular string inside of the string being operated on, if none are found, returns nil
     func rangesOfString(findStr:String) -> [Range<String.Index>]? {
         var ranges = [Range<String.Index>]()
         
@@ -24,6 +24,8 @@ extension String {
         if ranges.count > 0 { return ranges } else { return nil }
     }
     
+    // Reverses the string being operated on
+    // In: asdf Out: fdsa
     func reverse() -> String {
         var reversed = ""
         for scalar in self.unicodeScalars {
@@ -32,6 +34,7 @@ extension String {
         return reversed
     }
     
+    // Returns an optional Double from a string
     func toDouble() -> Double? {
         return NSNumberFormatter().numberFromString(self)?.doubleValue
     }
@@ -47,7 +50,7 @@ class CKMathParser {
     
     private var expression = ""
     
-    //Main public function, takes expression as input and outputs result
+    // Main public function, takes expression as input and outputs result
     func evaluate(mathExpression: String) -> String {
         expression = mathExpression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) //Removes extraneous spaces (if any)
 
@@ -58,6 +61,7 @@ class CKMathParser {
         return "\(evaluateExpression())"
     }
     
+    // Instantiating default operations
     init() {
         
         availableOperations["+"] = Op.BinaryOperation("+", 1, { $0 + $1 })
@@ -87,16 +91,24 @@ class CKMathParser {
                 }
             }
         }
+        
+        // Sorts the table in order of function appearance in the expression
         expressionTable = expressionTable.sort({ $0.rangeInExpression.startIndex < $1.rangeInExpression.startIndex })
         
     }
     
+    //
+    // Creates ExpressionRow and adds it to the table
+    //
     private func addRowToExpressionTable(operation: Op, range: Range<String.Index>) {
         if !(operation.description == "-" && isUnaryMinus(expression, range: range)) {
             expressionTable.append(ExpressionRow(operation: operation, arguments: getArguments(range, operation: operation), level: getLevel(range, operation: operation), rangeInExpression: range))
         }
     }
     
+    //
+    // Boolean of whether a minus at a supplied index in a supplied expression is a unary minus
+    //
     private func isUnaryMinus(expression: String, range: Range<String.Index>) -> Bool {
         if range.startIndex == expression.startIndex {
             return true
@@ -107,6 +119,9 @@ class CKMathParser {
         return false
     }
     
+    //
+    // Parses through the string and calculates the level based on convention
+    //
     private func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
         var level = 0
         for character in expression.substringToIndex(functionRange.startIndex).unicodeScalars {
@@ -116,26 +131,9 @@ class CKMathParser {
         return level + operation.level
     }
     
-    private func getSideArgument(relevantString: String) -> String? {
-        let stoppingValues = availableOperations.keys.array + ["(", ")"]
-        var argument = ""
-        for character in relevantString.unicodeScalars {
-            if !stoppingValues.contains("\(character)") {
-                argument.append(character)
-            } else if character == "-" {
-                if isUnaryMinus(relevantString, range: relevantString.rangeOfString("-")!) {
-                    argument.append(character)
-                } else {
-                    break;
-                }
-            } else { break; }
-        }
-        if argument == "" || stoppingValues.contains(argument) {
-            return nil
-        }
-        return argument
-    }
-    
+    //
+    // Gets the argument to the left of a function
+    //
     private func getLeftArgument(relevantString: String) -> String? {
         let stoppingValues = availableOperations.keys.array + ["(", ")"]
         var argument = ""
@@ -152,6 +150,9 @@ class CKMathParser {
         return argument
     }
     
+    //
+    // Gets the argument to the right of a function
+    //
     private func getRightArgument(relevantString: String) -> String? {
         let stoppingValues = availableOperations.keys.array + ["(", ")"]
         var argument = ""
@@ -171,6 +172,9 @@ class CKMathParser {
         return argument
     }
     
+    //
+    // Controls whether to get the left or right argument and writes it to the table row
+    //
     private func getArguments(functionRange: Range<String.Index>, operation: Op) -> [String?] {
         switch operation {
         case .BinaryOperation:
@@ -179,7 +183,7 @@ class CKMathParser {
 
             return [leftArgument, rightArgument]
         case .UnaryOperation:
-            let rightArgument = getSideArgument(expression.substringFromIndex(functionRange.endIndex.successor()))
+            let rightArgument = getRightArgument(expression.substringFromIndex(functionRange.endIndex.successor()))
             return [rightArgument]
         }
     }

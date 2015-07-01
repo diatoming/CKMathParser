@@ -2,5 +2,7 @@
 
 import UIKit
 
-let exp = "2+14+5"
+let exp = "2^-(2+1)"
+// Desired: 2^(-1*(2+1))"
+
 
