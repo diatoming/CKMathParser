@@ -50,7 +50,7 @@ class CKMathParser {
     //Main public function, takes expression as input and outputs result
     func evaluate(mathExpression: String) -> String {
         expression = mathExpression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) //Removes extraneous spaces (if any)
-        
+
         createExpressionTable()
         buildExpressionRelationships()
         calculateSequence()
@@ -73,7 +73,7 @@ class CKMathParser {
         availableConstants["π"] = Constant(name: "π", value: M_1_PI)
         availableConstants["e"] = Constant(name: "e", value: M_E)
     }
-    
+
     //
     // Generates the inital expression table values
     //
@@ -92,21 +92,21 @@ class CKMathParser {
     }
     
     private func addRowToExpressionTable(operation: Op, range: Range<String.Index>) {
-        if !(operation.description == "-" && isUnaryMinus(range)) {
+        if !(operation.description == "-" && isUnaryMinus(expression, range: range)) {
             expressionTable.append(ExpressionRow(operation: operation, arguments: getArguments(range, operation: operation), level: getLevel(range, operation: operation), rangeInExpression: range))
         }
     }
     
-    private func isUnaryMinus(range: Range<String.Index>) -> Bool {
+    private func isUnaryMinus(expression: String, range: Range<String.Index>) -> Bool {
         if range.startIndex == expression.startIndex {
             return true
         }
         if (availableOperations.keys.array + ["("]).contains("\(expression[range.startIndex.predecessor()])") {
             return true
         }
-        
         return false
     }
+    
     private func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
         var level = 0
         for character in expression.substringToIndex(functionRange.startIndex).unicodeScalars {
@@ -120,13 +120,14 @@ class CKMathParser {
         let stoppingValues = availableOperations.keys.array + ["(", ")"]
         var argument = ""
         for character in relevantString.unicodeScalars {
-            print(argument)
             if !stoppingValues.contains("\(character)") {
                 argument.append(character)
             } else if character == "-" {
-                if isUnaryMinus(relevantString.rangeOfString("-")!) {
+                if isUnaryMinus(relevantString, range: relevantString.rangeOfString("-")!) {
                     argument.append(character)
-                } else { break; }
+                } else {
+                    break;
+                }
             } else { break; }
         }
         if argument == "" || stoppingValues.contains(argument) {
@@ -135,16 +136,50 @@ class CKMathParser {
         return argument
     }
     
+    private func getLeftArgument(relevantString: String) -> String? {
+        let stoppingValues = availableOperations.keys.array + ["(", ")"]
+        var argument = ""
+        for character in relevantString.reverse().unicodeScalars {
+            if !stoppingValues.contains("\(character)") {
+                argument = "\(character)" + argument
+            } else if character == "-" {
+                if isUnaryMinus(relevantString, range: relevantString.rangesOfString("-")!.last!) {
+                    argument = "\(character)" + argument
+                } else { break }
+            } else { break }
+        }
+        if argument == "" || stoppingValues.contains(argument) { return nil }
+        return argument
+    }
+    
+    private func getRightArgument(relevantString: String) -> String? {
+        let stoppingValues = availableOperations.keys.array + ["(", ")"]
+        var argument = ""
+        var minusIndex = 0
+        for character in relevantString.unicodeScalars {
+            if !stoppingValues.contains("\(character)") {
+                argument.append(character)
+            } else if character == "-" {
+                if isUnaryMinus(relevantString, range: relevantString.rangesOfString("-")![minusIndex]) {
+                    
+                    argument.append(character)
+                    minusIndex++
+                } else { break }
+            } else { break }
+        }
+        if argument == "" || stoppingValues.contains(argument) { return nil }
+        return argument
+    }
+    
     private func getArguments(functionRange: Range<String.Index>, operation: Op) -> [String?] {
         switch operation {
         case .BinaryOperation:
-            let leftArgument = getSideArgument(expression.substringToIndex(functionRange.startIndex).reverse())?.reverse()
-            let rightArgument = getSideArgument(expression.substringFromIndex(functionRange.endIndex))
-            
+            let leftArgument = getLeftArgument(expression.substringToIndex(functionRange.startIndex))
+            let rightArgument = getRightArgument(expression.substringFromIndex(functionRange.endIndex))
+
             return [leftArgument, rightArgument]
         case .UnaryOperation:
             let rightArgument = getSideArgument(expression.substringFromIndex(functionRange.endIndex.successor()))
-        
             return [rightArgument]
         }
     }
@@ -227,7 +262,6 @@ class CKMathParser {
                 solution = function(row.arguments[0]!.toDouble()!)
             }
             if let argumentRowIndex = row.argOf {
-                
                 if index > argumentRowIndex {
                     switch expressionTable[argumentRowIndex].operation {
                     case .UnaryOperation:
