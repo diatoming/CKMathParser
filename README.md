@@ -14,6 +14,9 @@ Currently my code is extremely dirty and incomplete. I have been going back and 
 
 #### Current Problem Expressions
 * Negating something in paranthases: -(1+2)
+* Negating a named function: -sin(3.141592653)
+
+
 #### Installing CKMathParser
 While the end goal is to convert this project to an importable framework, for testing purposes the appropriate .swift files are contained in a test iOS project. If you want to try out the parser now with its limited functionality, instructions are as follows:
 
