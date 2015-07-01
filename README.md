@@ -11,7 +11,9 @@ CKMathParser is a **math expression parser** built with the **Swift 2.0** progra
 
 #### Be Warned!
 Currently my code is extremely dirty and incomplete. I have been going back and forth between different parsing methods and optimizations. I want to have a very readable, well commented, and error free program so just give me some time to sort it out.
- 
+
+#### Current Problem Expressions
+* Negating something in paranthases: -(1+2)
 #### Installing CKMathParser
 While the end goal is to convert this project to an importable framework, for testing purposes the appropriate .swift files are contained in a test iOS project. If you want to try out the parser now with its limited functionality, instructions are as follows:
 
