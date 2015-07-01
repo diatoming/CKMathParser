@@ -16,7 +16,7 @@ class ViewController: UIViewController {
 
     @IBAction func evaluate(sender: UIButton) {
         var solution = ""
-        let expression = "1-2/3^4+5"
+        let expression = inputTextField.text!
         let startTime = CFAbsoluteTimeGetCurrent()
         solution = CKMathParser().evaluate(expression)
         let endTime = CFAbsoluteTimeGetCurrent()

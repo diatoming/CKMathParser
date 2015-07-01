@@ -80,34 +80,32 @@ class CKMathParser {
     private func createExpressionTable() {
         
         //Gets function ranges and sorts them into order of use in expression
-        var ranges = [Range<String.Index>]()
         for operation in availableOperations.values {
             if let unsortedRanges = expression.rangesOfString(operation.description) {
                 for range in unsortedRanges {
-                    ranges.append(range)
-                    expressionTable.append(ExpressionRow(operation: availableOperations[expression[range]]!, arguments: getArguments(range, operation: operation), level: getLevel(range, operation: operation), rangeInExpression: range))
+                    addRowToExpressionTable(operation, range: range)
                 }
             }
         }
         expressionTable = expressionTable.sort({ $0.rangeInExpression.startIndex < $1.rangeInExpression.startIndex })
         
-        ranges = ranges.sort({ $0.startIndex < $1.startIndex})
-        
+    }
+    
+    private func addRowToExpressionTable(operation: Op, range: Range<String.Index>) {
+        if !(operation.description == "-" && isUnaryMinus(range)) {
+            expressionTable.append(ExpressionRow(operation: operation, arguments: getArguments(range, operation: operation), level: getLevel(range, operation: operation), rangeInExpression: range))
+        }
     }
     
     private func isUnaryMinus(range: Range<String.Index>) -> Bool {
-        let stoppingValues = availableOperations.keys.array + ["(", ")"]
-        var argument = ""
-        for character in expression.substringToIndex(range.startIndex).unicodeScalars.reverse() {
-            if !stoppingValues.contains("\(character)") {
-                argument.append(character)
-            } else { break; }
+        if range.startIndex == expression.startIndex {
+            return true
         }
-        if argument == "" || stoppingValues.contains(argument) {
-            return false
+        if (availableOperations.keys.array + ["("]).contains("\(expression[range.startIndex.predecessor()])") {
+            return true
         }
-
-        return true
+        
+        return false
     }
     private func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
         var level = 0
@@ -122,8 +120,13 @@ class CKMathParser {
         let stoppingValues = availableOperations.keys.array + ["(", ")"]
         var argument = ""
         for character in relevantString.unicodeScalars {
+            print(argument)
             if !stoppingValues.contains("\(character)") {
                 argument.append(character)
+            } else if character == "-" {
+                if isUnaryMinus(relevantString.rangeOfString("-")!) {
+                    argument.append(character)
+                } else { break; }
             } else { break; }
         }
         if argument == "" || stoppingValues.contains(argument) {
