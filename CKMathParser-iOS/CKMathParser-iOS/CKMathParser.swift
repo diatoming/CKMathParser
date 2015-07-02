@@ -50,7 +50,9 @@ class CKMathParser {
     
     private var expression = ""
     
+    //
     // Main public function, takes expression as input and outputs result
+    // Status: Needs better pre-evaluation formatting and could switch up in what order it does these activities
     func evaluate(mathExpression: String) -> String {
         expression = mathExpression.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) //Removes extraneous spaces (if any)
 
@@ -61,7 +63,10 @@ class CKMathParser {
         return "\(evaluateExpression())"
     }
     
+    //
     // Instantiating default operations
+    // Status: I would like to not have to repeat the operation/constant name every time
+    //
     init() {
         
         availableOperations["+"] = Op.BinaryOperation("+", 1, { $0 + $1 })
@@ -81,6 +86,7 @@ class CKMathParser {
 
     //
     // Generates the inital expression table values
+    // Status: I like the simplicity and elegance of the function
     //
     private func createExpressionTable() {
         
@@ -100,6 +106,7 @@ class CKMathParser {
     
     //
     // Creates ExpressionRow and adds it to the table
+    // Status: Not sure how could improve, seems pretty concise
     //
     private func addRowToExpressionTable(operation: Op, range: Range<String.Index>) {
         if !(operation.description == "-" && isUnaryMinus(expression, range: range)) {
@@ -109,6 +116,7 @@ class CKMathParser {
     
     //
     // Boolean of whether a minus at a supplied index in a supplied expression is a unary minus
+    // Status: As long as there are no cases missing, seems very concise
     //
     private func isUnaryMinus(expression: String, range: Range<String.Index>) -> Bool {
         if range.startIndex == expression.startIndex {
@@ -122,6 +130,7 @@ class CKMathParser {
     
     //
     // Parses through the string and calculates the level based on convention
+    // Status: Any method for finding level is going to involve a method like this, so it has my thumbs up
     //
     private func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
         var level = 0
@@ -134,6 +143,7 @@ class CKMathParser {
     
     //
     // Gets the argument to the left of a function
+    // Status: This function simply angers me, there must be a better way...
     //
     private func getLeftArgument(relevantString: String) -> String? {
         let stoppingValues = availableOperations.keys.array + ["(", ")"]
@@ -155,6 +165,7 @@ class CKMathParser {
     
     //
     // Gets the argument to the right of a function
+    // Status: This function simply angers me, there must be a better way...
     //
     private func getRightArgument(relevantString: String) -> String? {
         let stoppingValues = availableOperations.keys.array + ["(", ")"]
@@ -179,6 +190,7 @@ class CKMathParser {
     
     //
     // Controls whether to get the left or right argument and writes it to the table row
+    // Status: SImply delegates fuctions, not much room for improvement
     //
     private func getArguments(functionRange: Range<String.Index>, operation: Op) -> [String?] {
         switch operation {
@@ -194,7 +206,8 @@ class CKMathParser {
     }
     
     //
-    //  Figures out the argOfs for the rows
+    // Figures out the argOfs for the rows
+    // Status: I haven't looked into improving it yet, but I'm sure it can be
     //
     private func buildExpressionRelationships() {
         for _ in expressionTable {
@@ -240,6 +253,7 @@ class CKMathParser {
     
     //
     // Builds the sequence of operations
+    // Status: Seems like it could be vectorized in some way
     //
     private func calculateSequence() {
         for _ in expressionTable {
@@ -259,6 +273,7 @@ class CKMathParser {
     
     //
     // Evaluates the table
+    // Status: Seems simple for what it is doing, but could be improved as well
     //
     private func evaluateExpression() -> Double {
         for index in sequenceOfOperation {
