@@ -13,8 +13,8 @@ class CKMathParser {
     private var expressionTable = [ExpressionRow]() // Initializes expression table
     private var sequenceOfOperation = [Int]()
     
-    private var availableOperations = [String:Op]()
-    private var availableConstants = [String:Constant]()
+    private var availableOperations = [Op]()
+    private var availableConstants = [Constant]()
     
     private var expression = ""
     private var negationsAccountedFor = [Range<String.Index>]()
@@ -26,8 +26,10 @@ class CKMathParser {
         expression = formatInitialExpression(mathExpression) //Removes extraneous spaces (if any)
 
         createExpressionTable()
+        buildExpressionRelationships()
+        calculateSequence()
         
-        return (nil, nil)
+        return evaluateExpressionTable()
     }
     
     //
@@ -36,18 +38,19 @@ class CKMathParser {
     //
     init() {
         
-        availableOperations["+"] = Op.BinaryOperation("+", 1, { $0 + $1 })
-        availableOperations["-"] = Op.BinaryOperation("-", 1, { $0 - $1 })
-        availableOperations["*"] = Op.BinaryOperation("*", 2, { $0 * $1 })
-        availableOperations["/"] = Op.BinaryOperation("/", 2, { $0 / $1 })
-        availableOperations["^"] = Op.BinaryOperation("^", 3, { pow($0,$1) })
-        availableOperations["sin("] = Op.UnaryOperation("sin(", 10, { sin($0) })
-        availableOperations["cos("] = Op.UnaryOperation("cos(", 10, { cos($0) })
-        availableOperations["tan("] = Op.UnaryOperation("tan(", 10, { tan($0) })
-        availableOperations["log("] = Op.UnaryOperation("log(", 10, { log($0) })
+        availableOperations.append(Op.BinaryOperation("+", 1, { $0 + $1 }))
+        availableOperations.append(Op.BinaryOperation("-", 1, { $0 - $1 }))
+        availableOperations.append(Op.BinaryOperation("*", 2, { $0 * $1 }))
+        availableOperations.append(Op.BinaryOperation("/", 2, { $0 / $1 }))
+        availableOperations.append(Op.BinaryOperation("^", 3, { pow($0,$1) }))
+        availableOperations.append(Op.UnaryOperation("sin(", 10, { sin($0) }))
+        availableOperations.append(Op.UnaryOperation("cos(", 10, { cos($0) }))
+        availableOperations.append(Op.UnaryOperation("tan(", 10, { tan($0) }))
+        availableOperations.append(Op.UnaryOperation("log(", 10, { log($0) }))
 
-        availableConstants["π"] = Constant(name: "π", value: M_1_PI)
-        availableConstants["e"] = Constant(name: "e", value: M_E)
+        availableConstants.append(Constant(name: "π", value: M_1_PI))
+        availableConstants.append(Constant(name: "e", value: M_E))
+        
     }
     
     //
@@ -60,7 +63,7 @@ class CKMathParser {
         formattedExpression = formattedExpression.replaceSubstring(" ", substring: "")
         formattedExpression = formattedExpression.replaceSubstring("(-", substring: "(0-")
         formattedExpression = formattedExpression.replaceSubstring("(+", substring: "(0+")
-        if formattedExpression[formattedExpression.startIndex] == "-" || formattedExpression[formattedExpression.startIndex] == "+" {
+        if !formattedExpression.isEmpty && (formattedExpression[formattedExpression.startIndex] == "-" || formattedExpression[formattedExpression.startIndex] == "+") {
             formattedExpression = "0" + formattedExpression
         }
         
@@ -73,11 +76,10 @@ class CKMathParser {
     //
     private func createExpressionTable() {
         var operationsFound = [OpWithRange]()
-        var argumentsFound = [String]()
         var expressionToEdit = expression
         
         //Gets function ranges and sorts them into order of use in expression
-        for operation in availableOperations.values {
+        for operation in availableOperations {
             if let unsortedRanges = expression.rangesOfString(operation.description) {
                 for range in unsortedRanges {
                     operationsFound.append(OpWithRange(operation: operation, range: range))
@@ -90,11 +92,126 @@ class CKMathParser {
         expressionToEdit = expressionToEdit.replaceSubstring(")", substring: "")
         
         operationsFound = operationsFound.sort({ $0.range.startIndex < $1.range.startIndex })
-        argumentsFound = expressionToEdit.componentsSeparatedByString(",").filter({ !$0.isEmpty })
-
-        print(operationsFound.map({ $0.operation.description }))
-        print(argumentsFound)
+        var argumentsFound = expressionToEdit.componentsSeparatedByString(",").filter({ !$0.isEmpty })
         
+        for index in 0..<operationsFound.count {
+            let operation = operationsFound[index].operation
+            let range = operationsFound[index].range
+            let arguments: [String?] = [argumentsFound[index], argumentsFound[index+1]]
+            let level = getLevel(range, operation: operation)
+            expressionTable.append(ExpressionRow(operation: operation, arguments: arguments, level: level, rangeInExpression: range))
+        }
+        
+    }
+    
+    //
+    // Figures out the argOfs for the rows
+    // Status: I haven't looked into improving it yet, but I'm sure it can be
+    //
+    private func buildExpressionRelationships() {
+        for _ in expressionTable {
+            var largestIndex = 0
+            var largestLevel = 0
+            for (index, row) in expressionTable.enumerate() {
+                if row.level > largestLevel && row.argOf == nil {
+                    largestIndex = index
+                    largestLevel = row.level
+                }
+            }
+            
+            var upperLevel: Int?
+            var lowerLevel: Int?
+            var upperI = 1
+            var lowerI = 1
+            
+            while largestIndex-upperI >= 0 {
+                if expressionTable[largestIndex-upperI].argOf == nil {
+                    upperLevel = expressionTable[largestIndex-upperI].level
+                    break
+                }
+                upperI++
+            }
+            while largestIndex+lowerI < expressionTable.count {
+                if expressionTable[largestIndex+lowerI].argOf == nil {
+                    lowerLevel = expressionTable[largestIndex+lowerI].level
+                    break
+                }
+                lowerI++
+            }
+            
+            if upperLevel > lowerLevel {
+                expressionTable[largestIndex].argOf = largestIndex-upperI
+            } else if upperLevel < lowerLevel {
+                expressionTable[largestIndex].argOf = largestIndex+lowerI
+            } else if upperLevel == lowerLevel && upperLevel != nil && lowerLevel != nil {
+                expressionTable[largestIndex].argOf = largestIndex-upperI
+            }
+            
+        }
+    }
+    
+    //
+    // Builds the sequence of operations
+    // Status: Seems like it could be vectorized in some way
+    //
+    private func calculateSequence() {
+        for _ in expressionTable {
+            var largestLevel = 0
+            var largestIndex = 0
+            
+            for (index, row) in expressionTable.enumerate() {
+                if row.level > largestLevel && !sequenceOfOperation.contains(index) {
+                    largestLevel = row.level
+                    largestIndex = index
+                }
+            }
+            sequenceOfOperation.append(largestIndex)
+            
+        }
+    }
+    
+    //
+    // Evaluates the table
+    // Status: Seems simple for what it is doing, but could be improved as well
+    //
+    private func evaluateExpressionTable() -> (Double?, String?) {
+        for index in sequenceOfOperation {
+            let row = expressionTable[index]
+            var solution = 0.0
+            switch row.operation {
+            case .BinaryOperation(_, _, let function):
+                if let firstArgument = row.arguments[0]?.toDouble() {
+                    if let secondArgument = row.arguments[1]?.toDouble() {
+                        solution = function(firstArgument, secondArgument)
+                    } else {
+                        return (nil, "Error: \(row.arguments[1]) not recognized")
+                    }
+                } else {
+                    return (nil, "Error: \(row.arguments[0]) not recognized")
+                }
+            case .UnaryOperation(_, _, let function):
+                if let argument = row.arguments[0]?.toDouble() {
+                    solution = function(argument)
+                } else {
+                    return (nil, "Error: \(row.arguments[0]) not recognized")
+                }
+            }
+            if let argumentRowIndex = row.argOf {
+                if index > argumentRowIndex {
+                    switch expressionTable[argumentRowIndex].operation {
+                    case .UnaryOperation:
+                        expressionTable[argumentRowIndex].arguments[0] = "\(solution)"
+                    case .BinaryOperation:
+                        expressionTable[argumentRowIndex].arguments[1] = "\(solution)"
+                    }
+                } else {
+                    expressionTable[argumentRowIndex].arguments[0] = "\(solution)"
+                }
+            } else {
+                return (solution, nil)
+            }
+        }
+        return (nil, "Error: No Expression")
     }
     
     //
@@ -108,7 +225,7 @@ class CKMathParser {
         if range.startIndex == expression.startIndex {
             return true
         }
-        if (availableOperations.keys.array + ["("]).contains("\(expression[range.startIndex.predecessor()])") {
+        if (availableOperations.map({ $0.description }) + ["("]).contains("\(expression[range.startIndex.predecessor()])") {
             return true
         }
         return false

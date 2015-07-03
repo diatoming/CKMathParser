@@ -17,7 +17,6 @@
 		703C51031B2BE5330002AA33 /* CKMathParser_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C51021B2BE5330002AA33 /* CKMathParser_iOSUITests.swift */; };
 		703C51121B2BE6200002AA33 /* CKMathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703C51111B2BE6200002AA33 /* CKMathParser.swift */; };
 		70D4015D1B45EC09008E1BD4 /* CKTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D4015C1B45EC09008E1BD4 /* CKTypeExtensions.swift */; };
-		70D4015F1B464A13008E1BD4 /* CKMathParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D4015E1B464A13008E1BD4 /* CKMathParserTests.swift */; };
 		70D83EAF1B3D13E800298DA0 /* CKDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D83EAE1B3D13E800298DA0 /* CKDataTypes.swift */; };
 /* End PBXBuildFile section */
 
@@ -55,7 +54,6 @@
 		703C51041B2BE5330002AA33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		703C51111B2BE6200002AA33 /* CKMathParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKMathParser.swift; sourceTree = "<group>"; };
 		70D4015C1B45EC09008E1BD4 /* CKTypeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKTypeExtensions.swift; sourceTree = "<group>"; };
-		70D4015E1B464A13008E1BD4 /* CKMathParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKMathParserTests.swift; sourceTree = "<group>"; };
 		70D83EAE1B3D13E800298DA0 /* CKDataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKDataTypes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -110,7 +108,6 @@
 				703C50DF1B2BE5330002AA33 /* AppDelegate.swift */,
 				703C50E11B2BE5330002AA33 /* ViewController.swift */,
 				703C51111B2BE6200002AA33 /* CKMathParser.swift */,
-				70D4015E1B464A13008E1BD4 /* CKMathParserTests.swift */,
 				70D4015C1B45EC09008E1BD4 /* CKTypeExtensions.swift */,
 				70D83EAE1B3D13E800298DA0 /* CKDataTypes.swift */,
 				703C50E31B2BE5330002AA33 /* Main.storyboard */,
@@ -280,7 +277,6 @@
 			files = (
 				70D83EAF1B3D13E800298DA0 /* CKDataTypes.swift in Sources */,
 				703C50E21B2BE5330002AA33 /* ViewController.swift in Sources */,
-				70D4015F1B464A13008E1BD4 /* CKMathParserTests.swift in Sources */,
 				70D4015D1B45EC09008E1BD4 /* CKTypeExtensions.swift in Sources */,
 				703C50E01B2BE5330002AA33 /* AppDelegate.swift in Sources */,
 				703C51121B2BE6200002AA33 /* CKMathParser.swift in Sources */,
