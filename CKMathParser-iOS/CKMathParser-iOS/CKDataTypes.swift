@@ -14,7 +14,8 @@ struct ExpressionRow {
     var arguments: [String?]
     let level: Int
     let rangeInExpression: Range<String.Index>
-
+    var negationCount: Int?
+    
     var argOf: Int?
     var sequence: Int?
     
@@ -23,8 +24,6 @@ struct ExpressionRow {
         self.arguments = arguments
         self.level = level
         self.rangeInExpression = rangeInExpression
-        self.argOf = nil
-        self.sequence = nil
     }
 }
 

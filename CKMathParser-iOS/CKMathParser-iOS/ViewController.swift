@@ -16,13 +16,12 @@ class ViewController: UIViewController {
 
     @IBAction func evaluate(sender: UIButton) {
         var solution = ""
-        let expression = inputTextField.text!
+        let expression = "a+b*(c-d+(e^f))/sin(g)"
         let startTime = CFAbsoluteTimeGetCurrent()
         solution = CKMathParser().evaluate(expression)
         let endTime = CFAbsoluteTimeGetCurrent()
-        
-        textView.text = textView.text + "\n\(endTime-startTime))"
-        outputLabel.text = solution
+        textView.text = textView.text + "\n\(endTime-startTime)"
+        outputLabel.text = expression
     }
 
 }
