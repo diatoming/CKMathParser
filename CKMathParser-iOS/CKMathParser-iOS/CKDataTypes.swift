@@ -27,6 +27,11 @@ struct ExpressionRow {
     }
 }
 
+struct OpWithRange {
+    let operation: Op
+    let range: Range<String.Index>
+}
+
 struct Constant {
     let name: String
     let value: Double

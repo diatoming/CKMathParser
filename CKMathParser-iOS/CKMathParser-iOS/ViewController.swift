@@ -14,14 +14,24 @@ class ViewController: UIViewController {
     @IBOutlet weak var inputTextField: UITextField!
     @IBOutlet weak var textView: UITextView!
 
+    let mathParser = CKMathParser()
+    
     @IBAction func evaluate(sender: UIButton) {
-        var solution = ""
-        let expression = "a+b*(c-d+(e^f))/sin(g)"
-        let startTime = CFAbsoluteTimeGetCurrent()
-        solution = CKMathParser().evaluate(expression)
-        let endTime = CFAbsoluteTimeGetCurrent()
-        textView.text = textView.text + "\n\(endTime-startTime)"
-        outputLabel.text = expression
+        let expression = "(4+8)/4+(2+3*4)^2-3^4+(9+10)-(15-21)+7*(17-15)"//"a+b*(c-d+(e^f))/sin(g)"
+        
+        let solution = CKMathParser().evaluate(expression)
+        
+        textView.text = textView.text + "\n\(expression)"
+        
+        if let result = solution.result {
+            outputLabel.text = result.toString()
+        } else {
+            if let error = solution.error {
+                outputLabel.text = error
+            } else {
+                outputLabel.text = "Error: Unknown"
+            }
+        }
     }
 
 }

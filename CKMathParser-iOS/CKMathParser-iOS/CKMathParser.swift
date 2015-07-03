@@ -22,12 +22,12 @@ class CKMathParser {
     //
     // Main public function, takes expression as input and outputs result
     // Status: Needs better pre-evaluation formatting and could switch up in what order it does these activities
-    func evaluate(mathExpression: String) -> String {
+    func evaluate(mathExpression: String) -> (result: Double?, error: String?) {
         expression = formatInitialExpression(mathExpression) //Removes extraneous spaces (if any)
 
         createExpressionTable()
         
-        return ""
+        return (nil, nil)
     }
     
     //
@@ -50,6 +50,10 @@ class CKMathParser {
         availableConstants["e"] = Constant(name: "e", value: M_E)
     }
     
+    //
+    // Clears spaces, fixes unary minus/plus issues
+    // Status: Does not account for unary minus after operator
+    //
     private func formatInitialExpression(expression: String) -> String {
         var formattedExpression = expression
         
@@ -65,34 +69,37 @@ class CKMathParser {
 
     //
     // Generates the inital expression table values
-    // Status: I like the simplicity and elegance of the function
+    // Status: Not done
     //
     private func createExpressionTable() {
+        var operationsFound = [OpWithRange]()
+        var argumentsFound = [String]()
+        var expressionToEdit = expression
         
         //Gets function ranges and sorts them into order of use in expression
         for operation in availableOperations.values {
             if let unsortedRanges = expression.rangesOfString(operation.description) {
                 for range in unsortedRanges {
-                    //expressionTable.append(ExpressionRow(operation: operation, arguments: [], level: getLevel(range, operation: operation), rangeInExpression: range))
-                    expression = expression.replaceSubstring(operation.description, substring: ",")
+                    operationsFound.append(OpWithRange(operation: operation, range: range))
+                    expressionToEdit = expressionToEdit.replaceSubstring(operation.description, substring: ",")
                 }
             }
         }
-        expression = expression.replaceSubstring("(", substring: "")
-        expression = expression.replaceSubstring(")", substring: "")
-        var array = expression.componentsSeparatedByString(",")
+    
+        expressionToEdit = expressionToEdit.replaceSubstring("(", substring: "")
+        expressionToEdit = expressionToEdit.replaceSubstring(")", substring: "")
         
-        print(array)
-        // Sorts the table in order of function appearance in the expression
-//        expressionTable = expressionTable.sort({ $0.rangeInExpression.startIndex < $1.rangeInExpression.startIndex })
-//        for row in expressionTable {
-//            print(row.rangeInExpression)
-//        }
+        operationsFound = operationsFound.sort({ $0.range.startIndex < $1.range.startIndex })
+        argumentsFound = expressionToEdit.componentsSeparatedByString(",").filter({ !$0.isEmpty })
+
+        print(operationsFound.map({ $0.operation.description }))
+        print(argumentsFound)
+        
     }
     
     //
     // Boolean of whether a minus at a supplied index in a supplied expression is a unary minus
-    // Status: As long as there are no cases missing, seems very concise
+    // Status: Unimplemented
     //
     private func isUnaryMinus(expression: String, range: Range<String.Index>) -> Bool {
         if expression[range] != "-" {
@@ -109,7 +116,7 @@ class CKMathParser {
     
     //
     // Parses through the string and calculates the level based on convention
-    // Status: Any method for finding level is going to involve a method like this, so it has my thumbs up
+    // Status: Unimplemented
     //
     private func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
         var level = 0

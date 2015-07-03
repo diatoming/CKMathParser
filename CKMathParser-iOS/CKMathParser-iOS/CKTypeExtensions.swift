@@ -40,6 +40,7 @@ extension String {
         return NSNumberFormatter().numberFromString(self)?.doubleValue
     }
     
+    // Replaces each occurence of a given substring with another given substring
     func replaceSubstring(substringToReplace: String, substring: String) -> String {
         var done = false
         var newString = self
@@ -51,5 +52,13 @@ extension String {
             }
         }
         return newString
+    }
+}
+
+extension Double {
+    
+    // Returns Double as a String
+    func toString() -> String {
+        return "\(self)"
     }
 }
