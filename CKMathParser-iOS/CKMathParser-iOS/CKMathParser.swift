@@ -23,8 +23,9 @@ class CKMathParser {
     // Main public function, takes expression as input and outputs result
     // Status: Needs better pre-evaluation formatting and could switch up in what order it does these activities
     func evaluate(mathExpression: String) -> (result: Double?, error: String?) {
-        expression = formatInitialExpression(mathExpression) //Removes extraneous spaces (if any)
-
+        expression = mathExpression //Removes extraneous spaces (if any)
+        
+        formatInitialExpression()
         createExpressionTable()
         buildExpressionRelationships()
         calculateSequence()
@@ -57,17 +58,51 @@ class CKMathParser {
     // Clears spaces, fixes unary minus/plus issues
     // Status: Does not account for unary minus after operator
     //
-    private func formatInitialExpression(expression: String) -> String {
-        var formattedExpression = expression
+    private func formatInitialExpression() {
         
-        formattedExpression = formattedExpression.replaceSubstring(" ", substring: "")
-        formattedExpression = formattedExpression.replaceSubstring("(-", substring: "(0-")
-        formattedExpression = formattedExpression.replaceSubstring("(+", substring: "(0+")
-        if !formattedExpression.isEmpty && (formattedExpression[formattedExpression.startIndex] == "-" || formattedExpression[formattedExpression.startIndex] == "+") {
-            formattedExpression = "0" + formattedExpression
+        expression = expression.replaceSubstring(" ", substring: "")
+        expression = expression.replaceSubstring("(-", substring: "(0-")
+        expression = expression.replaceSubstring("(+", substring: "(0+")
+        if !expression.isEmpty && (expression[expression.startIndex] == "-" || expression[expression.startIndex] == "+") {
+            expression = "0" + expression
+        }
+        fixUnaryMinus()
+
+    }
+    
+    private func fixUnaryMinus() {
+        while true {
+            var indexOfUnary: String.Index?
+            let ranges = expression.rangesOfString("-(")
+            if let ranges = ranges {
+                for range in ranges {
+                    if isUnaryMinus(expression, range: Range(start: range.startIndex, end: range.startIndex.successor())) {
+                        indexOfUnary = range.startIndex
+                        break
+                    }
+                }
+            }
+            if let index = indexOfUnary {
+                expression.splice(["(", "0"], atIndex: index)
+                expression.splice(["1", "*"], atIndex: index.successor().successor().successor())
+                let startLevel = getLevel(Range(start: index.successor(), end: index.successor().successor()), operation: nil)
+                var paranthasesPlaced = false
+                for var indexToCloseParantheses = advance(expression.startIndex, 10); indexToCloseParantheses != expression.endIndex; indexToCloseParantheses = indexToCloseParantheses.successor() {
+                    if getLevel(Range(start: indexToCloseParantheses, end: indexToCloseParantheses.successor()), operation: nil) == startLevel {
+                        expression.splice([")"], atIndex: indexToCloseParantheses)
+                        paranthasesPlaced = true
+                        break
+                    }
+                }
+                if paranthasesPlaced == false {
+                    expression += ")"
+                }
+            } else {
+                break
+            }
         }
         
-        return formattedExpression
+        print(expression)
     }
 
     //
@@ -75,15 +110,17 @@ class CKMathParser {
     // Status: Not done
     //
     private func createExpressionTable() {
-        var operationsFound = [OpWithRange]()
+        var operationWithRangesFound = [OpWithRange]()
         var expressionToEdit = expression
         
         //Gets function ranges and sorts them into order of use in expression
         for operation in availableOperations {
             if let unsortedRanges = expression.rangesOfString(operation.description) {
                 for range in unsortedRanges {
-                    operationsFound.append(OpWithRange(operation: operation, range: range))
-                    expressionToEdit = expressionToEdit.replaceSubstring(operation.description, substring: ",")
+                    if !isUnaryMinus(expression, range: range) {
+                        operationWithRangesFound.append(OpWithRange(operation: operation, range: range))
+                        expressionToEdit = expressionToEdit.replaceSubstring(operation.description, substring: ",")
+                    }
                 }
             }
         }
@@ -91,12 +128,12 @@ class CKMathParser {
         expressionToEdit = expressionToEdit.replaceSubstring("(", substring: "")
         expressionToEdit = expressionToEdit.replaceSubstring(")", substring: "")
         
-        operationsFound = operationsFound.sort({ $0.range.startIndex < $1.range.startIndex })
+        operationWithRangesFound = operationWithRangesFound.sort({ $0.range.startIndex < $1.range.startIndex })
         var argumentsFound = expressionToEdit.componentsSeparatedByString(",").filter({ !$0.isEmpty })
         
-        for index in 0..<operationsFound.count {
-            let operation = operationsFound[index].operation
-            let range = operationsFound[index].range
+        for index in 0..<operationWithRangesFound.count {
+            let operation = operationWithRangesFound[index].operation
+            let range = operationWithRangesFound[index].range
             let arguments: [String?] = [argumentsFound[index], argumentsFound[index+1]]
             let level = getLevel(range, operation: operation)
             expressionTable.append(ExpressionRow(operation: operation, arguments: arguments, level: level, rangeInExpression: range))
@@ -235,13 +272,16 @@ class CKMathParser {
     // Parses through the string and calculates the level based on convention
     // Status: Unimplemented
     //
-    private func getLevel(functionRange: Range<String.Index>, operation: Op) -> Int {
+    private func getLevel(functionRange: Range<String.Index>, operation: Op?) -> Int {
         var level = 0
         for character in expression.substringToIndex(functionRange.startIndex).unicodeScalars {
             if character == "(" { level += 10 }
             if character == ")" { level -= 10 }
         }
-        return level + operation.level
+        if let operation = operation {
+            return level + operation.level
+        }
+        return level
     }
     
 }
